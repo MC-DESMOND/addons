@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cursor Follower in Button</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #e0eafc, #cfdef3);
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    #myButton {
+      position: relative;
+      padding: 20px 48px;
+      font-size: 20px;
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    #follower {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: rgba(255, 0, 100, 0.15);
+      border: 2px solid rgba(255, 0, 100, 0.7);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(0);
+      z-index: 0;
+      opacity: 0;
+      transition: transform 0.25s ease-out, opacity 0.2s ease;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 0 18px rgba(255, 0, 100, 0.4);
+    }
+
+    #follower.pulse {
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.25); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .button-text {
+      position: relative;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+
+<button id="myButton">
+  <span class="button-text">Hover me</span>
+  <div id="follower"></div>
+</button>
+
+<script>
+  const button = document.getElementById('myButton');
+  const follower = document.getElementById('follower');
+
+  let mouseX = 0, mouseY = 0;
+  let currentX = 0, currentY = 0;
+
+  function animateFollower() {
+    const speed = 0.2;
+    currentX += (mouseX - currentX) * speed;
+    currentY += (mouseY - currentY) * speed;
+
+    follower.style.left = `${currentX}px`;
+    follower.style.top = `${currentY}px`;
+
+    requestAnimationFrame(animateFollower);
+  }
+
+  animateFollower();
+
+  button.addEventListener('mouseenter', () => {
+    follower.style.opacity = '1';
+    follower.style.transform = 'translate(-50%, -50%) scale(1)';
+    follower.classList.add('pulse');
+  });
+
+  button.addEventListener('mouseleave', () => {
+    follower.style.opacity = '0';
+    follower.style.transform = 'translate(-50%, -50%) scale(0)';
+    follower.classList.remove('pulse');
+  });
+
+  button.addEventListener('mousemove', (e) => {
+    const rect = button.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+  });
+</script>
+
+</body>
+</html>

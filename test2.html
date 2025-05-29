@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hover Follower</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f0f0f0;
+    }
+
+    #myButton {
+      position: relative;
+      padding: 20px 40px;
+      font-size: 18px;
+      background: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    #follower {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<button id="myButton">Hover me</button>
+<div id="follower"></div>
+
+<script>
+  const button = document.getElementById('myButton');
+  const follower = document.getElementById('follower');
+
+  button.addEventListener('mouseenter', () => {
+    follower.style.display = 'block';
+  });
+
+  button.addEventListener('mouseleave', () => {
+    follower.style.display = 'none';
+  });
+
+  button.addEventListener('mousemove', (e) => {
+    follower.style.left = `${e.clientX}px`;
+    follower.style.top = `${e.clientY}px`;
+  });
+</script>
+
+</body>
+</html>
