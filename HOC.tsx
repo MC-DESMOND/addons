@@ -349,8 +349,8 @@ export class SpiritHOC<CustomProps = {} ,ElementInterface = HTMLDivElement>{
         this.soulprops = soulprops
     }
 
-     GetSoulBySoulId(soulId:string){
-        return this.bodys[soulId]
+     GetSoulBySoulId(soulId:string){ 
+        return this.bodys[soulId] 
     }
 
     CreateSoul({soulId,...addSoulprops}:BaseElementProps<ElementInterface> & {soulId?:string} = {}){
