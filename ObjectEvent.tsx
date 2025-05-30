@@ -7,7 +7,7 @@ export class ObjectEvent{
     events: dict<Function[]> = {};
 
     on(eventName: string, callback: Function) {
-        if (!this.events[eventName]) {
+        if (!this.has(eventName)) {
             this.events[eventName] = [];
         }
         this.events[eventName].push(callback);
@@ -17,12 +17,25 @@ export class ObjectEvent{
     }
 
     off(eventName: string, callback: Function) {
+        if (!this.has(eventName)) {
+            return
+        }
         if (this.events[eventName]) {
             this.events[eventName] = this.events[eventName].filter(cb => cb !== callback);
         }
     }
+    
+    clearEvent(eventName:string){
+        if (!this.has(eventName)) {
+            return
+        }
+        this.events[eventName] = []
+    }
 
     emit(eventName: string, ...args: any[]) {
+        if (!this.has(eventName)) {
+            return
+        }
         if (this.events[eventName]) {
             this.events[eventName].forEach(callback => callback(...args));
         }

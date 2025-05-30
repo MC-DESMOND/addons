@@ -8,7 +8,7 @@ export interface Listener{
     called:number
     listenid:string
     key:string
-    destroyed?:boolean
+    destroyed:boolean
 }
 export interface XEvent{
     called?:number
@@ -39,22 +39,24 @@ export default class XListener{
         let listener:Listener = this.listeners.has(listenid)?this.listeners.load(listenid):{
                 called:0,
                 listenid:listenid,
-                intervals:[],
-                key:key
+                key:key,
+                destroyed:false
             }as Listener
 
         const Caller = (e:XEvent)=>this.objectEvent.emit(key,e)
         let xevent:XEvent
          if (this.listeners.has(listenid)){
             if (listener.destroyed){
-                listener.destroyed = undefined
+                listener.destroyed = false
             }else{
                 return 
             }
                  
         }
         const Loop = () => {
-           
+            if(this.listeners.has(listenid)){
+                listener = this.listeners.load(key)
+            }
             if (this.events.has(key)){
                 xevent = this.events.load(key)
                 if ((xevent.called as any) > listener.called){
@@ -91,13 +93,10 @@ export default class XListener{
     }
 
     Distract(key:string){
-        for (var lnrid of Object.keys(this.listeners.access)){
-            const lnr =  this.listeners.load(lnrid) as Listener
-            if (lnr.key == key){
-                lnr.destroyed = true
-            }
-            this.listeners.save(lnrid,lnr)
-        }
+        const lnr = this.listeners.load(key) as Listener
+        lnr.destroyed = true
+        this.listeners.save(key,lnr)
+        this.objectEvent.clearEvent(key)
     }
 
     Announce(key:string,xevent:XEvent){
