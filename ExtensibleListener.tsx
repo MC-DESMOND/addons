@@ -2,20 +2,20 @@ import { Clientable, dict } from "./anys";
 import DataSaver from "./DataSaver";
 import { ObjectEvent } from "./ObjectEvent";
 
-export interface XEvent{
-    called?:number
-    data:any
-    key?:string
-    interval?:any
-    target?:Element
-}
+
 
 export interface Listener{
     called:number
     listenid:string
-    intervals:any[]
     key:string
     destroyed?:boolean
+}
+export interface XEvent{
+    called?:number
+    data:any
+    key?:string
+    listener?:Listener
+    target?:Element
 }
 
 export default class XListener{
@@ -61,6 +61,7 @@ export default class XListener{
                     /* console.log(xevent.called)
                     console.log(called) */
                     listener.called = xevent.called as any
+                    xevent.listener = listener
                     Clientable(()=>{
                         this.listeners.save(listenid,listener)
                     })
@@ -95,7 +96,6 @@ export default class XListener{
             if (lnr.key == key){
                 lnr.destroyed = true
             }
-            lnr.intervals = []
             this.listeners.save(lnrid,lnr)
         }
     }
