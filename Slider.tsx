@@ -86,7 +86,7 @@ export default class SliderHOC{
     }
 
     Render:FC<BaseElementProps<HTMLDivElement>> = ({...props}:BaseElementProps<HTMLDivElement>)=>{
-        return <this.control.Render  comment="Slider" {...props}></this.control.Render>
+        return <this.control._  comment="Slider" {...props}></this.control._>
     }
 
     protected _SliderComponent = ({...props}:BaseElementProps<HTMLDivElement>)=>{
@@ -120,9 +120,9 @@ export default class SliderHOC{
                 minHeight:"100%",
                 overflow:"auto",
             }
-            return<Div {...FStyle} key={index}><HOC.Render  {...FStyle}>
+            return<Div {...FStyle} key={index}><HOC._  {...FStyle}>
                {child}
-            </HOC.Render></Div>
+            </HOC._></Div>
         
         })
 
@@ -134,9 +134,9 @@ export default class SliderHOC{
         },[])
        
         return <Div width="100%" height="100%" {...props} style={Style} >
-            <this.innerFrame.Render  style={innerFrameStyle} comment="FlipInnerFrame">
+            <this.innerFrame._  style={innerFrameStyle} comment="FlipInnerFrame">
                 {firstReturn}
-            </this.innerFrame.Render>
+            </this.innerFrame._>
         </Div>
     }
 }

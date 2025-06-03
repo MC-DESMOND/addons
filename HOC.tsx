@@ -321,6 +321,10 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
 
         return <Hidden></Hidden>
     }
+    _=(props:BaseElementProps<ElementInterface>& CustomProps) =>{
+        return <this.Render {...props}>{props.children && props.children}</this.Render> 
+    }
+
     Render =(props:BaseElementProps<ElementInterface>& CustomProps) =>{
             this.forceUpdate = useStateUpdate()
             const addonsState = useState({})
