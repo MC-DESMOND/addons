@@ -10,7 +10,7 @@ type DictButton = {innerText:ReactNode} & BaseElementProps<HTMLDivElement>
 
 export default class Alerter{
     protected wrapper = new BaseHOC()
-    control = new BaseHOC()
+    control = new BaseHOC() 
     info = new BaseHOC()
     globalButtonsProps:dict = {}
     wrapperStyle:ICssHelper = {}
