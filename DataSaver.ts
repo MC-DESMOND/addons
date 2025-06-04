@@ -139,6 +139,32 @@ export default class DataSaver{
         }
         this.dump()
     }
+    save_many(Dict:dict){
+        for (let key in Dict){
+            this.save(key,Dict[key])
+        }
+    }
+    load_many(List:string[]){
+        const Dict:dict = {}
+        for(let key of List){
+            Dict[key] = this.load(key)
+        }
+        return Dict
+    }
+    has_any(List:string[]){
+        let bool:boolean[] = []
+        for(let key of List){
+            bool.push(this.has(key))
+        }
+        return bool.includes(true)
+    }
+    has_all(List:string[]){
+        let bool:boolean[] = []
+        for(let key of List){
+            bool.push(this.has(key))
+        }
+        return !bool.includes(false)
+    }
     has(name:string){
         return this.load(name) != undefined
     }

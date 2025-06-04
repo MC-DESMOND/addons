@@ -62,7 +62,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     protected _rootData:DataSaver
     protected _rootStorage:DataSaver
     protected _rootListener:XListener
-    
+    _
     onStyleChange(styleKey:styleKeys,func:Function){
         this._onStyleChangeEvent.on(styleKey,func)
     }
@@ -182,6 +182,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         this._rootData = new DataSaver("__root-data__",undefined)
         this._rootStorage = new DataSaver("__root-data__",undefined,"localStorage")
         this._rootListener = new XListener("__root-listener__")
+        this._ = this.Render
 
     }
 
@@ -320,9 +321,6 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         })
 
         return <Hidden></Hidden>
-    }
-    _=(props:BaseElementProps<ElementInterface>& CustomProps) =>{
-        return <this.Render {...props}>{props.children && props.children}</this.Render> 
     }
 
     Render =(props:BaseElementProps<ElementInterface>& CustomProps) =>{

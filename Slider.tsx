@@ -22,7 +22,7 @@ export default class SliderHOC{
     FrameHocs:BaseHOC[] = []
     onSlide:Function = (_val:number)=>{}
     onEnd:Function = (_val:number)=>{}
-
+    _
     constructor({direction="row",fitContent = false,slideTime = 300,blockLoop = false,effect = "ease-in-out", refType = React.useRef} = {}){
         this.direction = direction
         this.slideTime = slideTime
@@ -35,6 +35,7 @@ export default class SliderHOC{
         )=><this._SliderComponent  {...props}></this._SliderComponent>,
         refee:this.refType((null as any))})
         this.innerFrame = new BaseHOC({Component:Div,refee:this.refType((null as any))})
+        this._ = this.Render
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type

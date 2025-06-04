@@ -5,6 +5,7 @@ import { BaseElementProps, Div, EButton, Pre } from "./csml";
 import { ICssHelper } from "./css";
 import { FC, ReactNode, useEffect } from "react";
 import HeadWind from "./cwind";
+import DataSaver from "./DataSaver";
 
 type DictButton = {innerText:ReactNode} & BaseElementProps<HTMLDivElement>
 
@@ -23,6 +24,8 @@ export default class Alerter{
     display = ""
     loadingIconClassName = "loadingIcon"
     cache:dict = {}
+    rootstyle:DataSaver
+    _
     isloadify = false
     tapParentToClose = false
     protected previousAlert: "NONE" | "ASK" | "ALERT" | "LOADIFY" | "ICONIFY" = "NONE"
@@ -63,8 +66,21 @@ export default class Alerter{
                 ...globalButtonsProps
             }
         this.display = "none"
+        this._ = this.Render
+        this.rootstyle = new DataSaver("__alerter-root-style__")
     }
-
+    initRootStyle(){
+        this.globalButtonsProps = this.rootstyle.load("globalButtonsProps") || this.globalButtonsProps
+        this.wrapperStyle = this.rootstyle.load("wrapperStyle") || this.wrapperStyle
+        this.controlStyle = this.rootstyle.load("controlStyle") || this.controlStyle
+        this.infoStyle = this.rootstyle.load("infoStyle") || this.infoStyle
+    }
+    saveRootStyle(){
+        this.rootstyle.save("globalButtonsProps",this.globalButtonsProps)
+        this.rootstyle.save("wrapperStyle",this.wrapperStyle)
+        this.rootstyle.save("controlStyle",this.controlStyle)
+        this.rootstyle.save("infoStyle",this.infoStyle)
+    }
     protected generateButtons(buttons?:DictButton[]){
         this.daButtons = []
         if (!buttons){
@@ -159,7 +175,7 @@ export class DangerousLoadify{
     public text:BaseHOC
     public flex
     public gap
-
+    _
     update:any
     constructor(iconClassName:string = "loadingIcon",{message = undefined as string | undefined,openOnStart = true,flex="row",gap="20px"} = {}){
         this.time = 0.5
@@ -175,6 +191,7 @@ export class DangerousLoadify{
         this._message = message
         this.flex = flex
         this.gap = gap
+        this._ = this.Render
 
     }
     textInnerText(value:string | undefined){
@@ -187,6 +204,9 @@ export class DangerousLoadify{
             }
         })
     }
+
+
+
     Render =({children}:{children?:any})=>{
         this.update = useStateUpdate()
         return <this.wrapper._ background="rgba(0,0,0,0.7)" zIndex="2000" backdropFilter="blur(10px)" opacity={this.openOnStart == true?"1":"0"} transition={`opacity ${this.time}s ease-in-out`} {...this.wrapperProps as any} position="fixed" top="0px" left="0px" {...HeadWind.Square("v")} {...HeadWind.GridColumnCenter("")}>
