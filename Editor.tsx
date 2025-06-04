@@ -1,7 +1,6 @@
-import { dict } from "./anys";
-import { BaseElementProps, Div,Span, TextArea } from "./csml";
-import { ICssHelper } from "./css";
-import BaseHOC, { InputHOC } from "./HOC";
+
+import { BaseElementProps,  TextArea } from "./csml";
+import BaseHOC from "./HOC";
 // 789729
 type commandNames = (
     "bold" | "italic" | 

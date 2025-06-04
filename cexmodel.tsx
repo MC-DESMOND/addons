@@ -21,7 +21,7 @@ export class CEXModel{
     
     uniType
     channels:string[] = []
-    dispatcher:dict<Function> = {Public:(data:string|dict|number)=>{},Every:(data:string|dict|number)=>{}}
+    dispatcher:dict<Function> = {Public:(_data:string|dict|number)=>{},Every:(_data:string|dict|number)=>{}}
     constructor(uniType:string){
         this.uniType = uniType
 

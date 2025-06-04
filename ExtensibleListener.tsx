@@ -1,4 +1,4 @@
-import { Clientable, dict } from "./anys";
+import { Clientable } from "./anys";
 import DataSaver from "./DataSaver";
 import { ObjectEvent } from "./ObjectEvent";
 

@@ -1,6 +1,6 @@
-import React from "react";
 import { ICssHelper } from "./css";
 import { dict, pairIf } from "./anys";
+
 
 
 
@@ -32,7 +32,6 @@ import { dict, pairIf } from "./anys";
             ...pairIf("gap",gap),
             display:"flex",
             flexDirection:"row",
-
         } 
     }
     export function  FlexColumn(gap?:string){
@@ -40,7 +39,6 @@ import { dict, pairIf } from "./anys";
             ...pairIf("gap",gap),
             display:"flex",
             flexDirection:"column",
-
         } 
     }
     export function  FlexRowAllCenter(gap?:string){
