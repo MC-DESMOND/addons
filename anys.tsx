@@ -10,6 +10,10 @@ export function mergeText(...texts:string[]){
     return texts.join(" ")
 }
 
+export function isUpper(char: string): boolean {
+  return char === char.toUpperCase() && char !== char.toLowerCase();
+}
+
 export function empty(str:string){
   return str.trim() == ""
 }

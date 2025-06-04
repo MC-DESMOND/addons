@@ -1,7 +1,7 @@
 "use client"
 import React, {FC, ReactNode, useEffect, useState} from "react"
-import { FCssHelper, ICssHelper, styleKeys } from "./css"
-import { BaseElementProps, ConvertDictToStyle, Div, Hidden } from "./csml"
+import { CompileStyle, FCssHelper, ICssHelper, styleKeys } from "./css"
+import { BaseElementProps, Div, Hidden } from "./csml"
 import {__all__, dict, ReplaceAll, useStateUpdate} from "./anys";
 import {ListChildren} from "./anys";
 import { ObjectEvent } from "./ObjectEvent";
@@ -63,6 +63,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     protected _rootStorage:DataSaver
     protected _rootListener:XListener
     _
+    $
     onStyleChange(styleKey:styleKeys,func:Function){
         this._onStyleChangeEvent.on(styleKey,func)
     }
@@ -183,6 +184,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         this._rootStorage = new DataSaver("__root-data__",undefined,"localStorage")
         this._rootListener = new XListener("__root-listener__")
         this._ = this.Render
+        this.$ = this.ToRender
 
     }
 
@@ -270,7 +272,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         if (this.Element){
             if (val){
                 if (style){
-                    val = `<span style = "${ConvertDictToStyle(style)}">${val}</span>`
+                    val = `<span style = "${CompileStyle(style)}">${val}</span>`
                 }
                 (this.Element as any).innerHTML = val
             }

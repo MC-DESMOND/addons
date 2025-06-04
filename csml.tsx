@@ -1,9 +1,9 @@
 "use client"
 import React, { PropsWithChildren, ReactNode } from "react"
 import { useEffect, FC } from "react"
-import  { FCssHelper, ICssHelper, StyleToSheet } from "./css"
+import  { CompileStyle, FCssHelper, ICssHelper, StyleToSheet } from "./css"
 
-import { dict, DictToStringProps, filterOutDict, mergeText } from "./anys";
+import { dict, DictToStringProps, filterOutDict, mergeText, pairIf } from "./anys";
 
 
 // export var css = {} as ICssHelper
@@ -68,7 +68,7 @@ export type BaseElementProps<T> =  ICssHelper & React.DetailedHTMLProps<React.HT
   translate?:any | string,
   square?:string,
   bg?:string
-  Stringify?:boolean
+  stringify?:boolean
 }
 
 export function Center(props:BaseElementProps<HTMLDivElement>&{Ref?:any}){
@@ -86,22 +86,7 @@ export function Center(props:BaseElementProps<HTMLDivElement>&{Ref?:any}){
  * 
  */
 
-export function ConvertDictToStyle (styles:ICssHelper){
-    let result = ''
-    const Dict:dict = styles
-    for(let key of Object.keys(Dict)){
-      let newKey = ""
-        for (let char of key){
-            if (char == char.toLowerCase()){
-              newKey += char
-            }else{
-              newKey += `-${char.toLowerCase()}`
-            }
-        }
-        result += `${newKey}: ${Dict[key]};`
-    }
-    return result
-}
+
 
 export function UpdateElementStyle(element:HTMLElement,Style:dict){
   let key:any 
@@ -112,7 +97,7 @@ export function UpdateElementStyle(element:HTMLElement,Style:dict){
 }
 
 
-export function BaseElement({className,tag = "div",children,id,Ref,onClick,comment=null,style={},Stringify=false,ReElement = undefined,...props}:any): any{
+export function BaseElement({className,tag = "div",children,id,Ref,onClick,comment=null,style={},stringify=false,ReElement = undefined,...props}:any): any{
   const UnClassName = comment?`/*${String(comment).split(" ").join("_")}*/`:""
   className = `${className?className:""} ${UnClassName}`
   const Element =ReElement?({Ref,...newProps}:any)=><ReElement ref={Ref} {...newProps}> {newProps.children}</ReElement>: ({children,Ref,...attr}:any)=>{return React.createElement(tag,{ref:Ref,...attr},children)}
@@ -121,16 +106,16 @@ export function BaseElement({className,tag = "div",children,id,Ref,onClick,comme
   const bg:string | undefined = props.bg 
   props = filterOutDict(props,"square")
   const Style:ICssHelper = {
-      width: square? square.toLowerCase() == "doc"?"100vw":square : undefined,
-      height:square? square.toLowerCase() == "doc"?"100vh":square : undefined,
+      ...pairIf("width",square? square.toLowerCase() == "doc"?"100vw":square : undefined),
+      ...pairIf("height",square? square.toLowerCase() == "doc"?"100vh":square : undefined),
       ...bg?{backgroundColor:bg ,
       background:  bg ,}:{} ,
       ...style,
       ...propsforstyle  
   }
   const propforit = filterOutStyles(props)
-  if (Stringify){
-      return `<${tag} style="${StyleToSheet(Style as any)}" id = "${id}" class = "${className}" ${DictToStringProps(propforit)} >${children}</${tag}>`
+  if (stringify){
+      return `<${tag} style="${CompileStyle(Style as any)}" id = "${id}" class = "${className}" ${DictToStringProps(propforit)} >${children}</${tag}>`
   }
   return <Element { ...propforit} className={mergeText(className)} onClick={onClick} id={id} Ref={Ref} style={Style}>
       {children}

@@ -1,6 +1,6 @@
 "use client"
 
-import { Clientable, dict } from "./anys"
+import { Clientable, dict, isUpper } from "./anys"
 
 export var FCssHelper = {
 accentColor (value?:string){ return value as string},
@@ -1969,6 +1969,24 @@ export let FITCONTENT = "fit-content"
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 export {letters}
 
+export function CompileStyle(style:ICssHelper){
+    const dictStyle = style as dict<any>
+    let sheet = ""
+    for(let key in dictStyle){
+            let keystyle = ""
+            for (let letter of key){
+                if (isUpper(letter)){
+                    keystyle += `-${letter.toLowerCase()}`
+                }else{
+                    keystyle += letter
+                }
+            }
+            sheet += `
+            ${keystyle} : ${dictStyle[key]};`
+        }
+    return sheet
+}
+
 export function StyleToSheet(styles:dict<ICssHelper>){
     let sheet:string = ""
     for(let element in styles){
@@ -1976,18 +1994,7 @@ export function StyleToSheet(styles:dict<ICssHelper>){
         ${element}{
         `
         let style = styles[element] as dict
-        for(let key in styles[element]){
-            let keystyle = ""
-            for (let letter of key){
-                if (letters.toUpperCase().includes(letter)){
-                    keystyle += `-${letter.toLowerCase()}`
-                }else{
-                    keystyle += letter
-                }
-            }
-            sheet += `
-            ${keystyle} : ${style[key]};`
-        }
+        sheet += CompileStyle(style)
         sheet += `
         }`
     }
