@@ -1,7 +1,6 @@
 "use client"
 
-import React, {ReactNode, useEffect, useReducer, useState} from "react"
-import { BaseElementProps } from "./csml"
+import React, {ReactNode,  useReducer, useState} from "react"
 
 export type dict<T = any> = {[key:string]:T}
 

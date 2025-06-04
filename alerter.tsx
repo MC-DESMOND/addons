@@ -1,9 +1,9 @@
 "use client"
 import { dict, useStateUpdate } from "./anys";
 import BaseHOC from "./HOC";
-import { BaseElementProps, Div, EButton, Pre } from "./csml";
+import { BaseElementProps, Div, EButton } from "./csml";
 import { ICssHelper } from "./css";
-import { FC, ReactNode, useEffect } from "react";
+import {  ReactNode } from "react";
 import HeadWind from "./cwind";
 import DataSaver from "./DataSaver";
 
@@ -195,7 +195,7 @@ export class DangerousLoadify{
 
     }
     textInnerText(value:string | undefined){
-        this.text.Execute((element)=>{
+        this.text.Execute((_element)=>{
             if (value){
                 this.text.style.display("block")
                 this.text.innerHTML(value)

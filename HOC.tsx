@@ -1,5 +1,5 @@
 "use client"
-import React, {FC, ReactNode, useEffect, useState} from "react"
+import React, {FC, useEffect, useState} from "react"
 import { CompileStyle, FCssHelper, ICssHelper, styleKeys } from "./css"
 import { BaseElementProps, Div, Hidden } from "./csml"
 import {__all__, dict, ReplaceAll, useStateUpdate} from "./anys";
@@ -175,7 +175,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         this.isMediaDestroyed = false
         this.ref = refee
         this.existAs = existAs
-        this.style = {...FCssHelper,addStyle:(styleDict:ICssHelper)=>{}}
+        this.style = {...FCssHelper,addStyle:(_styleDict:ICssHelper)=>{}}
         this.Component = Component
         this.EffectifyStyle()
         this.cnio = new IObserver()

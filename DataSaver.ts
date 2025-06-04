@@ -77,9 +77,7 @@ export class Engine{
 export default class DataSaver{
     id:string
     elementId:string
-    private element:HTMLElement | null = null
     private _variables:dict = {}
-    private _access:dict = {}
     enc:Encryptor
     secretKey:string
     engine: Engine
@@ -173,10 +171,9 @@ export default class DataSaver{
         Clientable(()=>{
             if (this.engine.type == "element"){   
                  if (this.engine.Element){
-                    this.element = this.engine.Element
                     this.collect()
                 }else{
-                    this.element = this.engine.createElement()
+                    this.engine.createElement()
                     this.dump()
                     
                 }}
