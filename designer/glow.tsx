@@ -14,8 +14,9 @@ export default class Glow{
     Acting
     props
     attack :string
+    _
     protected parent:(el:Element | null | undefined)=>Element | null
-    constructor ({color = "white", size = 100, attack = "b" as "x" | "y" | "b" | "both" ,speed = 20,Acting = (isActing:boolean)=>{},position=[50 , 50],opacity = 0.5,dispatcher=(el:Element | null | undefined)=>el !=null? el.parentElement:null,props={} as BaseElementProps<HTMLDivElement>} = {}){
+    constructor ({color = "white", size = 400, attack = "b" as "x" | "y" | "b" | "both" ,speed = 20,Acting = (isActing:boolean)=>{},position=[50 , 50],opacity = 0.1,dispatcher=(el:Element | null | undefined)=>el !=null? el.parentElement:null,props={} as BaseElementProps<HTMLDivElement>} = {}){
         this.color = this.gradifyColor(color)
         this.size = size * 2
         this.soul = new BaseHOC()
@@ -26,6 +27,7 @@ export default class Glow{
         this.Acting = Acting
         this.props = props
         this.attack = attack
+        this._ = this.Render
     
     }
     protected gradifyColor(color:string){
