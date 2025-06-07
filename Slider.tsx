@@ -22,8 +22,9 @@ export default class SliderHOC{
     FrameHocs:BaseHOC[] = []
     onSlide:Function = (_val:number)=>{}
     onEnd:Function = (_val:number)=>{}
+    gap
     _
-    constructor({direction="row",fitContent = false,slideTime = 300,blockLoop = false,effect = "ease-in-out", refType = React.useRef} = {}){
+    constructor({direction="row",fitContent = false,gap = 10,slideTime = 300,blockLoop = false,effect = "ease-in-out", refType = React.useRef} = {}){
         this.direction = direction
         this.slideTime = slideTime
         this.effect = effect
@@ -36,6 +37,7 @@ export default class SliderHOC{
         refee:this.refType((null as any))})
         this.innerFrame = new BaseHOC({Component:Div,refee:this.refType((null as any))})
         this._ = this.Render
+        this.gap = gap
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
@@ -74,11 +76,13 @@ export default class SliderHOC{
         if (this.fitContent){
             this.FrameHocs[inputIndex % lengthOf].style.display("block")
             setTimeout(()=>{
-            this.FrameHocs.map((frameHoc) => {
-                frameHoc.style.display("none")
-                this.FrameHocs[inputIndex % lengthOf].style.display("block")
-            })
-        },this.slideTime)}
+                this.FrameHocs.map((frameHoc) => {
+                    frameHoc.style.display("none")
+                    this.FrameHocs[inputIndex % lengthOf].style.display("block")
+                })
+            },this.slideTime)
+
+        }
         /* console.log(this.direction)
         console.log(inputIndex) */
         this.currentIndex = inputIndex%lengthOf
@@ -120,18 +124,25 @@ export default class SliderHOC{
                 minWidth:"100%",
                 minHeight:"100%",
                 overflow:"auto",
+                // padding:`${this.gap!=0? this.gap/2:this.gap}px`,
+                boxSizing:'border-box'
             }
-            return<Div {...FStyle} key={index}><HOC._  {...FStyle}>
+            return<Div comment={`FrameHOC wrap index:${index}`} {...FStyle} key={index}
+            overflow="hidden"
+            padding={`${this.gap!=0? this.gap/2:this.gap}px`}
+            ><HOC._ comment={`FrameHOC index:${index}`} {...FStyle}>
                {child}
             </HOC._></Div>
         
         })
 
         useEffect(()=>{
+            this.FrameHocs = this.FrameHocs.filter(hoc => hoc.hasRendered == true)
             if (this.fitContent){this.FrameHocs.map(frameHoc=>{
                     frameHoc.style.display("none")
                 })
-                this.FrameHocs[0] && this.FrameHocs[0].style.display("block")}
+                this.FrameHocs[0] && this.FrameHocs[0].style.display("block")
+            }
         },[])
        
         return <Div width="100%" height="100%" {...props} style={Style} >

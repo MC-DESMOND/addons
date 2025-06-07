@@ -3,6 +3,7 @@ import HeadWind from "../cwind"
 import BaseHOC from "../HOC"
 import { BaseElementProps } from "../csml"
 import { ICssHelper } from "../css"
+import { Clientable } from "../anys"
 
 export default class Glow{
     protected color:string
@@ -15,6 +16,10 @@ export default class Glow{
     props
     attack :string
     _
+    percentOnWindow:number
+    sizeOnStop = 300 as number | Function  
+    winStop
+    NumberGetter
     protected parent:(el:Element | null | undefined)=>Element | null
     constructor ({color = "white", size = 400, attack = "b" as "x" | "y" | "b" | "both" ,speed = 20,Acting = (isActing:boolean)=>{},position=[50 , 50],opacity = 0.1,dispatcher=(el:Element | null | undefined)=>el !=null? el.parentElement:null,props={} as BaseElementProps<HTMLDivElement>} = {}){
         this.color = this.gradifyColor(color)
@@ -28,6 +33,10 @@ export default class Glow{
         this.props = props
         this.attack = attack
         this._ = this.Render
+        this.percentOnWindow = 0
+        this.sizeOnStop = 300
+        this.winStop = 300
+        this.NumberGetter = ()=>window.innerWidth
     
     }
     protected gradifyColor(color:string){
@@ -36,6 +45,24 @@ export default class Glow{
     set Color(color:string){
         this.color = this.gradifyColor(color)
         this.soul.style.background(this.color)
+    }
+    percentify({percent = 50, stop = 300,sizeOnStop = 300 as number | Function,NumberGetter = ()=>window.innerWidth} = {}){
+        this.percentOnWindow = percent
+        this.sizeOnStop = sizeOnStop
+        this.winStop = stop
+        this.NumberGetter = NumberGetter
+        const MainFunc =  ()=>{
+                const fromPercent =  (this.percentOnWindow/100)*window.innerWidth
+                if (fromPercent >= this.winStop){
+                    this.Size = fromPercent
+                }else{
+                    this.Size = typeof(this.sizeOnStop) == "function"?this.sizeOnStop(): this.sizeOnStop
+                }
+            }
+        MainFunc()
+        Clientable(()=>{
+            window.addEventListener("resize",MainFunc)
+        })
     }
     get Color(){
         return this.color

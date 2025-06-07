@@ -1991,8 +1991,7 @@ export function StyleToSheet(styles:dict<ICssHelper>){
     let sheet:string = ""
     for(let element in styles){
         sheet += `
-        ${element}{
-        `
+        ${element}{`
         let style = styles[element] as dict
         sheet += CompileStyle(style)
         sheet += `
@@ -2001,8 +2000,8 @@ export function StyleToSheet(styles:dict<ICssHelper>){
     return sheet
 }
 
-export function DocumentAddStyle(stylesDict:dict<ICssHelper>){
-    let sheet = StyleToSheet(stylesDict)
+export function DocumentAddStyle(stylesDict:dict<ICssHelper> | string){
+    let sheet = typeof(stylesDict) == "string"?stylesDict: StyleToSheet(stylesDict)
     Clientable(()=>{
         let styleElement = document.getElementById("__DocumentAddStyle__")
         if (styleElement == null){

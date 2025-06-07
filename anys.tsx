@@ -33,6 +33,12 @@ export function pairIf(name:string,attr?:any){
     }
 }
 
+export function rgba( r:number,g:number,b:number,a:number){
+    return ` rgba(${r},${g},${b},${a}) `
+}
+export function rgb( r:number,g:number,b:number,a:number = 1){
+    return ` rgba(${r},${g},${b},${a}) `
+}
 
 
 export function filterOutDict(Dict:dict,...exclude:string[]){

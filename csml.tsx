@@ -163,6 +163,9 @@ export const P:FC<BaseElementProps<HTMLElement>>= function({className,children,i
 export const Form:FC<BaseElementProps<HTMLFormElement> >= function({className,children,id,Ref,onClick,...props}){
   return <BaseElement tag="form"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
+export const Label:FC<BaseElementProps<HTMLLabelElement> >= function({className,children,id,Ref,onClick,...props}){
+  return <BaseElement tag="label"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
 export const RDiv:FC<BaseElementProps<HTMLDivElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="div"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
@@ -173,7 +176,7 @@ export const Section:FC<BaseElementProps<HTMLBaseElement>> = function({className
   return <BaseElement tag="section"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
 export const Button:FC<BaseElementProps<HTMLButtonElement>> = function({className,children,id,Ref,type = "button",onClick,...props}:any){
-  return <BaseElement tag="button"  {...props} type = {type} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+  return <BaseElement tag="button" border="none" outline="none" cursor="pointer" borderRadius="8px" paddingInline="22px" paddingBlock="10px"  {...props} type = {type} onClick={onClick}  className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
 export const Input:FC<BaseElementProps<HTMLInputElement> & React.InputHTMLAttributes<HTMLInputElement> &{name?:string,value?:string}> = function({className,children,id,Ref,type = "text",placeholder,onClick,...props}){
   return <BaseElement tag="input"  {...props} type = {type} placeholder = {placeholder} onClick={onClick} className={className} id={id} Ref={Ref}   ></BaseElement>

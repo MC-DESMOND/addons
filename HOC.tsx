@@ -1,7 +1,7 @@
 "use client"
 import React, {FC, useEffect, useState} from "react"
 import { CompileStyle, FCssHelper, ICssHelper, styleKeys } from "./css"
-import { BaseElementProps, Div, Hidden } from "./csml"
+import { BaseElementProps, Div, Hidden, Input, TextArea } from "./csml"
 import {__all__, dict, ReplaceAll, useStateUpdate} from "./anys";
 import {ListChildren} from "./anys";
 import { ObjectEvent } from "./ObjectEvent";
@@ -41,13 +41,12 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     
     protected ref:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>
     public style
-    public isMediaDestroyed: boolean
-    public hasRendered = false
     public medias:dict<AtMedia> = {}
     private variables:dict = {}
     public existAs
     public Addons:dict<any[]> = {}
     public cnio:IObserver
+    protected _hasRendered = false
     protected Component
     protected forceUpdate?:Function
     protected setAddons:any
@@ -172,11 +171,10 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
    
 
     constructor ({Component = Div,existAs, refee = React.useRef(null),props = {} }:{Component?:FC ,existAs?:Function,props?:BaseElementProps<ElementInterface>,refee?:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>} = {}){
-        this.isMediaDestroyed = false
         this.ref = refee
         this.existAs = existAs
         this.style = {...FCssHelper,addStyle:(_styleDict:ICssHelper)=>{}}
-        this.Component = Component
+        this.Component = this.InitComponent(Component)
         this.EffectifyStyle()
         this.cnio = new IObserver()
         this.props = props
@@ -186,6 +184,10 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         this._ = this.Render
         this.$ = this.ToRender
 
+    }
+
+    protected InitComponent(Component:FC){
+        return Component
     }
 
     IObserve({styleIn,styleOut,classIn,classOut}:{styleIn?:ICssHelper,styleOut?:ICssHelper,classIn?:string,classOut?:string} = {}){
@@ -313,6 +315,9 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
             func(element)
         }
     }
+    public get hasRendered(){
+        return this._hasRendered
+    }
 
 
     ToRender = ({children,renderId ,...props}:BaseElementProps<ElementInterface> & {renderId:any}) => {
@@ -333,7 +338,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
             const addonPropsState = useState([])
             this.addonProps = addonPropsState[0]
             this.setAddonProps = addonPropsState[1]
-            this.hasRendered = true
+            this._hasRendered = true
             useEffect(()=>{
                 this.EventControl.emit(this.clientLoaded)
             })
@@ -343,33 +348,39 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
             </this.Component>
     }
 }
-
-export class SpiritHOC<CustomProps = {} ,ElementInterface = HTMLDivElement>{
+type RT<T> =  T
+export class SpiritHOC<CustomProps = RT<{}> ,ElementInterface = HTMLDivElement>{
     component:FC
-    soulprops:BaseElementProps<ElementInterface>
+    soulprops:BaseElementProps<ElementInterface> & CustomProps
     protected bodys:dict<BaseHOC> = {}
-    constructor ({Component=Div,soulprops={}}:{Component?:FC<any>,soulprops?:BaseElementProps<ElementInterface>} = {}){
+    HOCClass
+    constructor ({Component=Div as FC<any>,soulprops=({} as BaseElementProps<ElementInterface> & CustomProps),HOCClass = BaseHOC} = {}){
         this.component = Component
-        this.soulprops = soulprops
+        this.soulprops = soulprops 
+        this.HOCClass = this.initHOC(HOCClass)
+    }
+
+    protected initHOC(HOC:typeof BaseHOC){
+        return HOC 
     }
 
      GetSoulBySoulId(soulId:string){ 
         return this.bodys[soulId] 
     }
 
-    CreateSoul({soulId,...addSoulprops}:BaseElementProps<ElementInterface> & {soulId?:string} = {}){
+    CreateSoul({soulId,...addSoulprops}:BaseElementProps<ElementInterface>  & {soulId?:string} & CustomProps = {} as any){
         const soul = (props:BaseElementProps<ElementInterface> & CustomProps)=>{
             return <this.component {...this.soulprops} {...addSoulprops} {...props}>{props.children}</this.component>
         }
-        const body = new BaseHOC<CustomProps,ElementInterface>({Component:soul as any})
+        const body = new this.HOCClass<CustomProps,ElementInterface>({Component:soul as any})
         if (soulId){
             this.bodys[soulId] = body as any
         }
         return body
     }
 
-    RenderSoul = ({soulId,...props}:BaseElementProps<ElementInterface> & CustomProps & {soulId?:string} )=>{
-        const body = new BaseHOC<CustomProps,ElementInterface>({Component:this.component as any})
+    RenderSoul = ({soulId,...props}:BaseElementProps<ElementInterface> & dict & {soulId?:string} )=>{
+        const body = new this.HOCClass<CustomProps,ElementInterface>({Component:this.component as any})
         if (soulId){
             this.bodys[soulId] = body as any
         }
@@ -471,6 +482,9 @@ export var HOCS = {
     
 }
 export class InputHOC extends BaseHOC<React.InputHTMLAttributes<HTMLInputElement>,HTMLInputElement>{
+    protected InitComponent(_Component: FC): React.FC {
+        return Input
+    }
     value(val?:string){
         if (this.Element){
             if (val){
@@ -491,4 +505,15 @@ export class LinkHOC extends BaseHOC<React.LinkHTMLAttributes<HTMLLinkElement>,H
 export class VideoHOC extends BaseHOC<React.VideoHTMLAttributes<HTMLVideoElement>,HTMLVideoElement>{}
 export class AudioHOC extends BaseHOC<React.AudioHTMLAttributes<HTMLAudioElement>,HTMLAudioElement>{}
 export class ImageHOC extends BaseHOC<React.ImgHTMLAttributes<HTMLImageElement>,HTMLImageElement>{}
-export class TextAreaHOC extends BaseHOC<React.TextareaHTMLAttributes<HTMLTextAreaElement>,HTMLTextAreaElement>{}
+export class TextAreaHOC extends InputHOC{
+    protected InitComponent(_Component: FC): React.FC {
+        return TextArea
+    }
+}
+
+    
+export class InputSpiritHOC extends SpiritHOC<React.InputHTMLAttributes<HTMLInputElement>,HTMLInputElement>{
+    protected initHOC(HOC: typeof BaseHOC) {
+        return InputHOC as any
+    }
+}

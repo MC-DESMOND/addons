@@ -2,13 +2,39 @@
 import { dict, useStateUpdate } from "./anys";
 import BaseHOC from "./HOC";
 import { BaseElementProps, Div, EButton } from "./csml";
-import { ICssHelper } from "./css";
-import {  ReactNode } from "react";
+import { DocumentAddStyle, ICssHelper } from "./css";
+import {  ReactNode, useEffect } from "react";
 import HeadWind from "./cwind";
 import DataSaver from "./DataSaver";
+import CWind from "./cwind";
+import XListener from "./ExtensibleListener";
 
 type DictButton = {innerText:ReactNode} & BaseElementProps<HTMLDivElement>
-
+const LoadifyBootstrapActivate = ()=>{
+    DocumentAddStyle(`    
+        .loadingIcon { width: 50px; aspect-ratio: 1; display: grid; color: #ffffff; background: radial-gradient(farthest-side, currentColor calc(100% - 6px),#0000 calc(100% - 5px) 0); -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 13px),#000 calc(100% - 12px)); border-radius: 50%; animation: l19 2s infinite linear; } 
+        .loadingIcon::before, 
+        .loadingIcon::after { content: ""; grid-area: 1/1; background: linear-gradient(currentColor 0 0) center, linear-gradient(currentColor 0 0) center; background-size: 100% 10px,10px 100%; background-repeat: no-repeat; } 
+        .loadingIcon::after { transform: rotate(45deg);@keyframes l19 {100%{transform: rotate(1turn)}@keyframes rotate { 100%{ transform: rotate(360deg); }
+        .loadingIcon2 { width: fit-content; font-weight: bold; font-family: monospace; font-size: 30px; background: linear-gradient(135deg,#0000 calc(50% - 0.5em),#000 0 calc(50% + 0.5em),#0000 0) right/300% 100%; animation: l22 2s infinite; } 
+        .loadingIcon2::before { content: "Loading..."; color: #0000; padding: 0 5px; background: inherit; background-image: linear-gradient(135deg,#0000 calc(50% - 0.5em),#fff 0 calc(50% + 0.5em),#0000 0); -webkit-background-clip:text; background-clip:text;@keyframes l22{ 100%{background-position: left}
+        .loadingIcon3 { width: 50px; aspect-ratio: 1; display: grid; border: 4px solid #0000; border-radius: 50%; border-right-color: #ffffff; animation: l15 1s infinite linear; } 
+        .loadingIcon3::before, 
+        .loadingIcon3::after { content: ""; grid-area: 1/1; margin: 2px; border: inherit; border-radius: 50%; animation: l15 2s infinite; } 
+        .loadingIcon3::after { margin: 8px; animation-duration: 3s; } @keyframes l15{100%{transform: rotate(1turn)}
+        .loadingIcon4 { width: 50px; aspect-ratio: 1; border-radius: 50%; background:radial-gradient(farthest-side,#ffffff 94%,#0000) top/8px 8px no-repeat, conic-gradient(#0000 30%,#ffffff); -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0); animation: l13 1s infinite linear; } @keyframes l13{100%{transform: rotate(1turn)}
+        .loadingIcon5 { width: 40px; aspect-ratio: 1; color: #1d6485; position: relative; background: radial-gradient(10px,currentColor 94%,#0000); } 
+        .loadingIcon5:before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(9px at bottom right,#0000 94%,currentColor) topleft, radial-gradient(9px at bottom left ,#0000 94%,currentColor) topright, radial-gradient(9px at topright,#0000 94%,currentColor) bottom left, radial-gradient(9px at topleft ,#0000 94%,currentColor) bottom right; background-size: 20px 20px; background-repeat: no-repeat; animation: l18 1.5s infinite cubic-bezier(0.3,1,0,1); } @keyframes l18 { 33%{inset:-10px;transform: rotate(0deg)} 66%{inset:-10px;transform: rotate(90deg)} 100% {inset:0;transform: rotate(90deg)}
+        .loadingIcon6 { height: 4px; width: 130px; --c:no-repeat linear-gradient(#1d6485 0 0); background: var(--c),var(--c),#d7b8fc2d; background-size: 60% 100%; animation: l16 3s infinite; } @keyframes l16 { 0% {background-position:-150% 0,-150% 0} 66%{background-position: 250% 0,-150% 0} 100% {background-position: 250% 0, 250% 0} }`
+)}
+export type LoadifyBootstrap = (
+    "loadingIcon" | 
+    "loadingIcon2" | 
+    "loadingIcon3" | 
+    "loadingIcon4" | 
+    "loadingIcon5" | 
+    "loadingIcon6"
+)
 export default class Alerter{
     protected wrapper = new BaseHOC()
     control = new BaseHOC() 
@@ -24,8 +50,14 @@ export default class Alerter{
     display = ""
     loadingIconClassName = "loadingIcon"
     cache:dict = {}
-    rootstyle:DataSaver
     _
+    _rootlistener:XListener
+    openStyle
+    closeStyle
+    time
+    alert
+    remote
+    private effect
     isloadify = false
     tapParentToClose = false
     protected previousAlert: "NONE" | "ASK" | "ALERT" | "LOADIFY" | "ICONIFY" = "NONE"
@@ -36,51 +68,66 @@ export default class Alerter{
     update:any
     
     protected open(){
-
         this.display = "grid"
         this.update()
         this.isOpened = true
         setTimeout(() => {
-            this.control.style.opacity ("1")
-            this.control.style.translate ("0px 0px")
-            
-
+            this.control.style.addStyle (this.openStyle)
         }, 10);
         
     }
     close(){
         this.display = "none"
-        this.control.style.translate ("0px 40px")
-        this.control.style.opacity ("0")
+        this.control.style.addStyle(this.closeStyle)
         this.isOpened = false
         setTimeout(() => {
             this.update()
-        }, 300);
+        }, this.time);
     }
-    constructor(globalButtonsProps:BaseElementProps<HTMLDivElement> = {}){
+    constructor({button = {} as BaseElementProps<HTMLDivElement>,remote = undefined as string | undefined,effect="ease-in-out",openStyle= {opacity:"1",scale:"1"} as ICssHelper ,closeStyle = {opacity:"0",scale:"1.2"} as ICssHelper,time = 300}={}){
             this.globalButtonsProps  = {
-                backgroundColor:globalButtonsProps.background || "rgba(59, 130, 246, 0.7)",
+                backgroundColor:button.background || "rgba(59, 130, 246, 0.7)",
                 color:"white",
                 textAlign:"center",
                 onClick:()=>{this.close()},
-                ...globalButtonsProps
+                ...button
             }
+        this.openStyle = openStyle
+        this.closeStyle = closeStyle
+        this.time = time
+        this.remote = remote
+        this.effect = effect
         this.display = "none"
         this._ = this.Render
-        this.rootstyle = new DataSaver("__alerter-root-style__")
+        this._rootlistener = new XListener("ALERTER|XListener__")
+        LoadifyBootstrapActivate()
+        this.alert = this.Alert
     }
-    initRootStyle(){
-        this.globalButtonsProps = this.rootstyle.load("globalButtonsProps") || this.globalButtonsProps
-        this.wrapperStyle = this.rootstyle.load("wrapperStyle") || this.wrapperStyle
-        this.controlStyle = this.rootstyle.load("controlStyle") || this.controlStyle
-        this.infoStyle = this.rootstyle.load("infoStyle") || this.infoStyle
+
+    get rootlnr(){
+        return this._rootlistener
     }
-    saveRootStyle(){
-        this.rootstyle.save("globalButtonsProps",this.globalButtonsProps)
-        this.rootstyle.save("wrapperStyle",this.wrapperStyle)
-        this.rootstyle.save("controlStyle",this.controlStyle)
-        this.rootstyle.save("infoStyle",this.infoStyle)
+
+    initLnrs(remoteId:string){
+        this.rootlnr.Listen(`${remoteId}.alert`,e=>{
+            console.log(`${remoteId}.alert `)
+            this.Alert(e.data.text)
+        })
+        this.rootlnr.Listen(`${remoteId}.ask`,e=>{
+            console.log(`${remoteId}.ask`)
+            this.ask(e.data.text,e.data.buttons)
+        })
+        this.rootlnr.Listen(`${remoteId}.loadify`,e=>{
+            console.log(`${remoteId}.loadify`)
+            this.Loadify(e.data.text,{className:e.data.className})
+        })
+        this.rootlnr.Listen(`${remoteId}.iconify`,e=>{
+            console.log(`${remoteId}.iconify`)
+            this.Iconify(e.data.text,e.data.tpc)
+        })
     }
+ 
+
     protected generateButtons(buttons?:DictButton[]){
         this.daButtons = []
         if (!buttons){
@@ -101,6 +148,10 @@ export default class Alerter{
         }
     }
     ask(message:ReactNode,buttons?:DictButton[],tapParentToClose?:boolean){
+        if (this.remote){
+            this.rootlnr.Announce(`${this.remote}.ask`,{data:{text:message,buttons:buttons}})
+            return
+        }
         this.tapParentToClose = tapParentToClose != undefined ? tapParentToClose : true
         this.isloadify = false
         this.generateButtons(buttons)        
@@ -110,17 +161,29 @@ export default class Alerter{
     }
 
     Alert(message:ReactNode){
+        if (this.remote){
+            this.rootlnr.Announce(`${this.remote}.alert`,{data:{text:message}})
+            return
+        }
         this.ask(message)
         this.previousAlert = "ALERT"
     }
 
     Iconify(com:ReactNode,buttons:DictButton[] = [],tapParentToClose?:boolean){
+        if (this.remote){
+            this.rootlnr.Announce(`${this.remote}.iconify`,{data:{text:com}})
+            return
+        }
         this.ask(com,buttons,tapParentToClose)
         this.previousAlert = "ICONIFY"
        
     }
 
     Loadify(text?:ReactNode,{className,loadifyWrapperStyle = {gap:"20px"},style = {background:"transparent"}}:{className?:string ,style?:ICssHelper,loadifyWrapperStyle?:ICssHelper} = {}){
+        if (this.remote){
+            this.rootlnr.Announce(`${this.remote}.loadify`,{data:{text,className}})
+            return
+        }
         if (className == undefined){
             className = this.loadingIconClassName
         }
@@ -135,7 +198,10 @@ export default class Alerter{
     }
 
     Render = ({children,...props}:BaseElementProps<HTMLDivElement>)=>{
-        this.update = useStateUpdate()
+        const update = useStateUpdate()
+        this.update = update
+        
+        // console.log(this.update)
         return <this.wrapper._ comment="Alerter"  background="rgba(0,0,0,0.7)" backdropFilter="blur(10px)" {...(this.wrapperStyle as dict)} position="fixed" width="100vw" height="100vh" top="0" left="0"  zIndex="1000" display={this.display} placeItems="center" onClick={
             (e)=>{
                 this.wrapper.Execute((element)=>{
@@ -148,9 +214,9 @@ export default class Alerter{
             }
         }>
                 {children}
-                <this.control._ minHeight="150px" transition="translate 0.4s ease-in-out, opacity 0.4s ease-in-out" opacity="1" translate="0px 0px" gap="20px" boxSizing="border-box" minWidth="200px" maxWidth="300px" width="90%" overflowX="hidden"  padding="20px" display="flex" alignItems="center" justifyContent="center" flexDirection="column" borderRadius="15px" background="rgba(80,80,80,0.3)" {...(this.controlStyle as dict)} {...(this.isloadify? this.loadingControlStyle as dict:{})} {...props}>
-                    <this.info._ width="100%" display="flex" justifyContent="center" gap="20px" alignItems="center" flexDirection="column" {...(this.infoStyle as dict)}>
-                           {this.innerText != undefined && <Div width="100%" textAlign="center">{this.innerText}</Div>}
+                <this.control._ minHeight="150px" {...CWind.TransitionMerge([...Object.keys(this.openStyle)],`${this.time}ms ${this.effect}`)} {...this.closeStyle} gap="20px" boxSizing="border-box" minWidth="200px" maxWidth="300px" width="90%" overflowX="hidden"  padding="20px" display="flex" alignItems="center" justifyContent="center" flexDirection="column" borderRadius="15px" background="rgba(80,80,80,0.3)" {...(this.controlStyle as dict)} {...(this.isloadify? this.loadingControlStyle as dict:{})} {...props}>
+                    <this.info._ width="100%" display="flex" justifyContent="center"  gap="20px" alignItems="center" flexDirection="column" {...(this.infoStyle as dict)}>
+                           {this.innerText != undefined && <Div width="100%" textAlign="center" overflowWrap="break-word" overflow="hidden">{this.innerText}</Div>}
                     </this.info._>
                      {this.daButtons.length > 0 && <Div display="grid" width="100%" gap="10px" gridTemplateColumns="repeat(auto-fit,minmax(90px,1fr))">
                         {this.daButtons}
@@ -160,6 +226,29 @@ export default class Alerter{
     }
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export class DangerousLoadify{
     protected wrapper:BaseHOC
@@ -192,6 +281,8 @@ export class DangerousLoadify{
         this.flex = flex
         this.gap = gap
         this._ = this.Render
+        LoadifyBootstrapActivate()
+ 
 
     }
     textInnerText(value:string | undefined){
@@ -209,6 +300,7 @@ export class DangerousLoadify{
 
     Render =({children}:{children?:any})=>{
         this.update = useStateUpdate()
+        
         return <this.wrapper._ background="rgba(0,0,0,0.7)" zIndex="2000" backdropFilter="blur(10px)" opacity={this.openOnStart == true?"1":"0"} transition={`opacity ${this.time}s ease-in-out`} {...this.wrapperProps as any} position="fixed" top="0px" left="0px" {...HeadWind.Square("v")} {...HeadWind.GridColumnCenter("")}>
                {children}
                 <Div {...HeadWind.Square("fit")} {...HeadWind.FlexRowAllCenter(this.gap)} flexDirection={this.flex} transform={this.openOnStart == true?"translateY(0px)":`translateY(${this.iconTranslate})`} transition={`transform ${this.time}s ease-in-out`}>
