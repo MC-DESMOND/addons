@@ -23,8 +23,8 @@ export default class XListener{
     listeners:DataSaver
     private objectEvent:ObjectEvent
     constructor(id:string){
-        this.events = new DataSaver(id+"--events")
-        this.listeners = new DataSaver(id+"--lnrs")
+        this.events = new DataSaver("XLISTENER|"+id+"--events")
+        this.listeners = new DataSaver("XLISTENER|"+id+"--lnrs")
         this.objectEvent = new ObjectEvent()
     }
 

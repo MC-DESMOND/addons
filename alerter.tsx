@@ -99,7 +99,7 @@ export default class Alerter{
         this.effect = effect
         this.display = "none"
         this._ = this.Render
-        this._rootlistener = new XListener("ALERTER|XListener__")
+        this._rootlistener = new XListener("ALERTER|")
         LoadifyBootstrapActivate()
         this.alert = this.Alert
     }
@@ -110,19 +110,19 @@ export default class Alerter{
 
     initLnrs(remoteId:string){
         this.rootlnr.Listen(`${remoteId}.alert`,e=>{
-            console.log(`${remoteId}.alert `)
+            // console.log(`${remoteId}.alert `)
             this.Alert(e.data.text)
         })
         this.rootlnr.Listen(`${remoteId}.ask`,e=>{
-            console.log(`${remoteId}.ask`)
+            // console.log(`${remoteId}.ask`)
             this.ask(e.data.text,e.data.buttons)
         })
         this.rootlnr.Listen(`${remoteId}.loadify`,e=>{
-            console.log(`${remoteId}.loadify`)
+            // console.log(`${remoteId}.loadify`)
             this.Loadify(e.data.text,{className:e.data.className})
         })
         this.rootlnr.Listen(`${remoteId}.iconify`,e=>{
-            console.log(`${remoteId}.iconify`)
+            // console.log(`${remoteId}.iconify`)
             this.Iconify(e.data.text,e.data.tpc)
         })
     }

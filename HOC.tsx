@@ -178,9 +178,9 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         this.EffectifyStyle()
         this.cnio = new IObserver()
         this.props = props
-        this._rootData = new DataSaver("__root-data__",undefined)
-        this._rootStorage = new DataSaver("__root-data__",undefined,"localStorage")
-        this._rootListener = new XListener("__root-listener__")
+        this._rootData = new DataSaver("BASEHOC|__root-data__",undefined)
+        this._rootStorage = new DataSaver("BASEHOC|__root-data__",undefined,"localStorage")
+        this._rootListener = new XListener("BASEHOC|__root-listener__")
         this._ = this.Render
         this.$ = this.ToRender
 
