@@ -43,7 +43,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     public style
     public medias:dict<AtMedia> = {}
     private variables:dict = {}
-    public existAs
+    public remote
     public Addons:dict<any[]> = {}
     public cnio:IObserver
     protected _hasRendered = false
@@ -170,9 +170,9 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     }
    
 
-    constructor ({Component = Div,existAs, refee = React.useRef(null),props = {} }:{Component?:FC ,existAs?:Function,props?:BaseElementProps<ElementInterface>,refee?:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>} = {}){
+    constructor ({Component = Div,remote, refee = React.useRef(null),props = {} }:{Component?:FC ,remote?:Function,props?:BaseElementProps<ElementInterface>,refee?:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>} = {}){
         this.ref = refee
-        this.existAs = existAs
+        this.remote = remote
         this.style = {...FCssHelper,addStyle:(_styleDict:ICssHelper)=>{}}
         this.Component = this.InitComponent(Component)
         this.EffectifyStyle()
@@ -225,8 +225,8 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         }
     }
     get Element():ElementInterface | undefined|null{
-        if (this.existAs) {
-            return this.existAs()
+        if (this.remote) {
+            return this.remote()
         }else{
             return this.ref.current 
         }
