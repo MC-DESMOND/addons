@@ -114,7 +114,7 @@ export default class Alerter{
             this.Alert(e.data.text)
         })
         this.rootlnr.Listen(`${remoteId}.ask`,e=>{
-            // console.log(`${remoteId}.ask`) 
+            // console.log(`${remoteId}.ask`)
             this.ask(e.data.text,e.data.buttons)
         })
         this.rootlnr.Listen(`${remoteId}.loadify`,e=>{
