@@ -15,18 +15,26 @@ const LoadifyBootstrapActivate = ()=>{
         .loadingIcon { width: 50px; aspect-ratio: 1; display: grid; color: #ffffff; background: radial-gradient(farthest-side, currentColor calc(100% - 6px),#0000 calc(100% - 5px) 0); -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 13px),#000 calc(100% - 12px)); border-radius: 50%; animation: l19 2s infinite linear; } 
         .loadingIcon::before, 
         .loadingIcon::after { content: ""; grid-area: 1/1; background: linear-gradient(currentColor 0 0) center, linear-gradient(currentColor 0 0) center; background-size: 100% 10px,10px 100%; background-repeat: no-repeat; } 
-        .loadingIcon::after { transform: rotate(45deg);@keyframes l19 {100%{transform: rotate(1turn)}@keyframes rotate { 100%{ transform: rotate(360deg); }
+        .loadingIcon::after { transform: rotate(45deg);}
+        @keyframes l19 {100%{transform: rotate(1turn)}}
+        @keyframes rotate { 100%{ transform: rotate(360deg); }}
         .loadingIcon2 { width: fit-content; font-weight: bold; font-family: monospace; font-size: 30px; background: linear-gradient(135deg,#0000 calc(50% - 0.5em),#000 0 calc(50% + 0.5em),#0000 0) right/300% 100%; animation: l22 2s infinite; } 
-        .loadingIcon2::before { content: "Loading..."; color: #0000; padding: 0 5px; background: inherit; background-image: linear-gradient(135deg,#0000 calc(50% - 0.5em),#fff 0 calc(50% + 0.5em),#0000 0); -webkit-background-clip:text; background-clip:text;@keyframes l22{ 100%{background-position: left}
+        .loadingIcon2::before { content: "Loading..."; color: #0000; padding: 0 5px; background: inherit; background-image: linear-gradient(135deg,#0000 calc(50% - 0.5em),#fff 0 calc(50% + 0.5em),#0000 0); -webkit-background-clip:text; background-clip:text;}
+        @keyframes l22{ 100%{background-position: left}}
         .loadingIcon3 { width: 50px; aspect-ratio: 1; display: grid; border: 4px solid #0000; border-radius: 50%; border-right-color: #ffffff; animation: l15 1s infinite linear; } 
-        .loadingIcon3::before, 
-        .loadingIcon3::after { content: ""; grid-area: 1/1; margin: 2px; border: inherit; border-radius: 50%; animation: l15 2s infinite; } 
-        .loadingIcon3::after { margin: 8px; animation-duration: 3s; } @keyframes l15{100%{transform: rotate(1turn)}
-        .loadingIcon4 { width: 50px; aspect-ratio: 1; border-radius: 50%; background:radial-gradient(farthest-side,#ffffff 94%,#0000) top/8px 8px no-repeat, conic-gradient(#0000 30%,#ffffff); -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0); animation: l13 1s infinite linear; } @keyframes l13{100%{transform: rotate(1turn)}
+        .loadingIcon3::before, .loadingIcon3::after { content: ""; grid-area: 1/1; margin: 2px; border: inherit; border-radius: 50%; animation: l15 2s infinite; } 
+        .loadingIcon3::after { margin: 8px; animation-duration: 3s; }
+        @keyframes l15{100%{transform: rotate(1turn)}}
+        .loadingIcon4 { width: 50px; aspect-ratio: 1; border-radius: 50%; background:radial-gradient(farthest-side,#ffffff 94%,#0000) top/8px 8px no-repeat, conic-gradient(#0000 30%,#ffffff); -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0); animation: l13 1s infinite linear; } 
+        @keyframes l13{100%{transform: rotate(1turn)}}
         .loadingIcon5 { width: 40px; aspect-ratio: 1; color: #1d6485; position: relative; background: radial-gradient(10px,currentColor 94%,#0000); } 
-        .loadingIcon5:before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(9px at bottom right,#0000 94%,currentColor) topleft, radial-gradient(9px at bottom left ,#0000 94%,currentColor) topright, radial-gradient(9px at topright,#0000 94%,currentColor) bottom left, radial-gradient(9px at topleft ,#0000 94%,currentColor) bottom right; background-size: 20px 20px; background-repeat: no-repeat; animation: l18 1.5s infinite cubic-bezier(0.3,1,0,1); } @keyframes l18 { 33%{inset:-10px;transform: rotate(0deg)} 66%{inset:-10px;transform: rotate(90deg)} 100% {inset:0;transform: rotate(90deg)}
-        .loadingIcon6 { height: 4px; width: 130px; --c:no-repeat linear-gradient(#1d6485 0 0); background: var(--c),var(--c),#d7b8fc2d; background-size: 60% 100%; animation: l16 3s infinite; } @keyframes l16 { 0% {background-position:-150% 0,-150% 0} 66%{background-position: 250% 0,-150% 0} 100% {background-position: 250% 0, 250% 0} }`
-)}
+        .loadingIcon5:before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(9px at bottom right,#0000 94%,currentColor) topleft, radial-gradient(9px at bottom left ,#0000 94%,currentColor) topright, radial-gradient(9px at topright,#0000 94%,currentColor) bottom left, radial-gradient(9px at topleft ,#0000 94%,currentColor) bottom right; background-size: 20px 20px; background-repeat: no-repeat; animation: l18 1.5s infinite cubic-bezier(0.3,1,0,1); } 
+        @keyframes l18 { 33%{inset:-10px;transform: rotate(0deg)} 66%{inset:-10px;transform: rotate(90deg)} 100% {inset:0;transform: rotate(90deg)}}
+        .loadingIcon6 { height: 4px; width: 130px; --c:no-repeat linear-gradient(#1d6485 0 0); background: var(--c),var(--c),#d7b8fc2d; background-size: 60% 100%; animation: l16 3s infinite; }
+        @keyframes l16 { 0% {background-position:-150% 0,-150% 0} 66%{background-position: 250% 0,-150% 0} 100% {background-position: 250% 0, 250% 0}
+         }`
+)
+}
 export type LoadifyBootstrap = (
     "loadingIcon" | 
     "loadingIcon2" | 
