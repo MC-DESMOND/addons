@@ -8,6 +8,7 @@ import { ObjectEvent } from "./ObjectEvent";
 import IObserver from "./IObserver";
 import DataSaver from "./DataSaver";
 import XListener, { XEvent } from "./ExtensibleListener";
+import CWind from "./cwind";
 
 /**
      * 
@@ -190,7 +191,12 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         return Component
     }
 
-    IObserve({styleIn,styleOut,classIn,classOut}:{styleIn?:ICssHelper,styleOut?:ICssHelper,classIn?:string,classOut?:string} = {}){
+    IObserve({styleIn = {},styleOut,classIn,classOut,styleInTransition}:{styleInTransition?:string, styleIn?:ICssHelper,styleOut?:ICssHelper,classIn?:string,classOut?:string} = {}){
+        if (styleInTransition){
+            const trans = this.style.transition()
+            // console.log(trans)
+            this.style.transition(trans+(trans.trim() == ""?"":", ")+CWind.TransitionMerge(Object.keys(styleIn),styleInTransition).transition)
+        }
         this.cnio.init({styleIn,styleOut,classIn,classOut})
         if (this.Element){
             this.cnio.Observe(this.Element as any)
@@ -352,7 +358,7 @@ type RT<T> =  T
 export class SpiritHOC<CustomProps = RT<{}> ,ElementInterface = HTMLDivElement>{
     component:FC
     soulprops:BaseElementProps<ElementInterface> & CustomProps
-    protected bodys:dict<BaseHOC> = {}
+    souls:dict<BaseHOC> = {}
     HOCClass
     constructor ({Component=Div as FC<any>,soulprops=({} as BaseElementProps<ElementInterface> & CustomProps),HOCClass = BaseHOC} = {}){
         this.component = Component
@@ -365,7 +371,7 @@ export class SpiritHOC<CustomProps = RT<{}> ,ElementInterface = HTMLDivElement>{
     }
 
      GetSoulBySoulId(soulId:string){ 
-        return this.bodys[soulId] 
+        return this.souls[soulId] 
     }
 
     CreateSoul({soulId,...addSoulprops}:BaseElementProps<ElementInterface>  & {soulId?:string} & CustomProps = {} as any){
@@ -374,7 +380,7 @@ export class SpiritHOC<CustomProps = RT<{}> ,ElementInterface = HTMLDivElement>{
         }
         const body = new this.HOCClass<CustomProps,ElementInterface>({Component:soul as any})
         if (soulId){
-            this.bodys[soulId] = body as any
+            this.souls[soulId] = body as any
         }
         return body
     }
@@ -382,7 +388,7 @@ export class SpiritHOC<CustomProps = RT<{}> ,ElementInterface = HTMLDivElement>{
     RenderSoul = ({soulId,...props}:BaseElementProps<ElementInterface> & dict & {soulId?:string} )=>{
         const body = new this.HOCClass<CustomProps,ElementInterface>({Component:this.component as any})
         if (soulId){
-            this.bodys[soulId] = body as any
+            this.souls[soulId] = body as any
         }
         return <body.Render {...this.soulprops as any} {...props as any}>{props.children}</body.Render>
     }
