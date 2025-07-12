@@ -2002,11 +2002,12 @@ export function StyleToSheet(styles:dict<ICssHelper>){
 
 export function DocumentAddStyle(stylesDict:dict<ICssHelper> | string){
     let sheet = typeof(stylesDict) == "string"?stylesDict: StyleToSheet(stylesDict)
+    const ADDSTYLEIDENTIFER = "ADD-STYLE-IDENTIFIER"
     Clientable(()=>{
-        let styleElement = document.getElementById("__DocumentAddStyle__")
+        let styleElement = document.querySelector(`.${ADDSTYLEIDENTIFER}`)
         if (styleElement == null){
-            styleElement = document.createElement("style")
-            styleElement.id = "__DocumentAddStyle__"
+            styleElement = document.querySelector("style") || document.createElement("style")
+            styleElement.classList.add(ADDSTYLEIDENTIFER)
             document.head.appendChild(styleElement)
 
         }
@@ -2015,5 +2016,6 @@ export function DocumentAddStyle(stylesDict:dict<ICssHelper> | string){
         }else{
             styleElement.innerHTML +=  sheet
         }
+        // document.re
     })
 }
