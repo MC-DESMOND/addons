@@ -33,6 +33,15 @@ export function pairIf(name:string,attr?:any){
     }
 }
 
+ export function SmoothLinkScroll(event:any) {
+    event.preventDefault();
+    const targetId = event.target.getAttribute("href").substring(1);
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
 export function rgba( r:number,g:number,b:number,a:number){
     return ` rgba(${r},${g},${b},${a}) `
 }

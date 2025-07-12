@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import HeadWind from "../cwind"
 import BaseHOC from "../HOC"
 import { BaseElementProps } from "../csml"
-import { ICssHelper } from "../css"
+// import { ICssHelper } from "../css"
 import { Clientable } from "../anys"
 
 export default class Glow{
@@ -14,14 +14,14 @@ export default class Glow{
     position
     Acting
     props
-    attack :string
+    attack :string | null
     _
     percentOnWindow:number
     sizeOnStop = 300 as number | Function  
     winStop
     NumberGetter
     protected parent:(el:Element | null | undefined)=>Element | null
-    constructor ({color = "white", size = 400, attack = "b" as "x" | "y" | "b" | "both" ,speed = 20,Acting = (isActing:boolean)=>{},position=[50 , 50],opacity = 0.1,dispatcher=(el:Element | null | undefined)=>el !=null? el.parentElement:null,props={} as BaseElementProps<HTMLDivElement>} = {}){
+    constructor ({color = "white", size = 400, attack = "b" as "x" | "y" | "b" | "both" | null,speed = 20,Acting = (_isActing:boolean)=>{},position=[50 , 50],opacity = 0.1,dispatcher=(el:Element | null | undefined)=>el !=null? el.parentElement:null,props={} as BaseElementProps<HTMLDivElement>} = {}){
         this.color = this.gradifyColor(color)
         this.size = size * 2
         this.soul = new BaseHOC()
@@ -119,14 +119,14 @@ export default class Glow{
                         }}
                         const top = soul.get("cy")-(soul.get("soulRect").width/2)
                         const left = soul.get("cx")-(soul.get("soulRect").height/2)
-                        if(this.attack.toLowerCase() == "x"){
-                            soul.style.left (`${left}px`);
-                        }else if (this.attack.toLowerCase() == "y"){
-                            soul.style.top (`${top }px`);
-                        }else{
-                            soul.style.left (`${left}px`);
-                            soul.style.top (`${top }px`);
-                        }
+                        if (this.attack){    if(this.attack.toLowerCase() == "x"){
+                                soul.style.left (`${left}px`);
+                            }else if (this.attack.toLowerCase() == "y"){
+                                soul.style.top (`${top }px`);
+                            }else{
+                                soul.style.left (`${left}px`);
+                                soul.style.top (`${top }px`);
+                            }}
                         if (this.position){if (!soul.has("mx") || !soul.has("my")){    
                             soul.style.left (`${left}px`);
                             soul.style.top (`${top }px`);
@@ -141,19 +141,19 @@ export default class Glow{
                 this.parent(soul.Element)?.addEventListener('mousemove', function(event:any) {
                 const e = event as MouseEvent
                 soul.Execute((_element)=>{
-                    
-                    soul.style.display("block")
-                        const parentRect = parent.getBoundingClientRect() 
-                        const x = e.clientX - parentRect.left;
-                        const y = e.clientY - parentRect.top;
-                        soul.set("mx",x)
-                        soul.set("my",y)
-                        soul.set("soulRect",soul.Element?.getBoundingClientRect())
-                        soul.set("parentRect",parent.getBoundingClientRect())
-                        /* console.log(soul.get("soulRect"))
-                        console.log(soul.Element?.scrollWidth)
-                        console.log(soul.Element?.scrollHeight) */
-                        self.Acting(true)
+                    if (self.attack != null){
+                        soul.style.display("block")
+                            const parentRect = parent.getBoundingClientRect() 
+                            const x = e.clientX - parentRect.left;
+                            const y = e.clientY - parentRect.top;
+                            soul.set("mx",x)
+                            soul.set("my",y)
+                            soul.set("soulRect",soul.Element?.getBoundingClientRect())
+                            soul.set("parentRect",parent.getBoundingClientRect())
+                            /* console.log(soul.get("soulRect"))
+                            console.log(soul.Element?.scrollWidth)
+                            console.log(soul.Element?.scrollHeight) */
+                            self.Acting(true)}
                 })
             })
             this.parent(soul.Element)?.addEventListener("mouseleave",()=>{

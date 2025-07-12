@@ -1,5 +1,5 @@
-import { ICssHelper } from "./css";
-import { dict, pairIf } from "./anys";
+// import { ICssHelper } from "./css";
+import {  pairIf } from "./anys";
 
 
 

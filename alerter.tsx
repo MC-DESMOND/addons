@@ -3,9 +3,9 @@ import { dict, useStateUpdate } from "./anys";
 import BaseHOC from "./HOC";
 import { BaseElementProps, Div, EButton } from "./csml";
 import { DocumentAddStyle, ICssHelper } from "./css";
-import {  ReactNode, useEffect } from "react";
+import {  ReactNode } from "react";
 import HeadWind from "./cwind";
-import DataSaver from "./DataSaver";
+// import DataSaver from "./DataSaver";
 import CWind from "./cwind";
 import XListener from "./ExtensibleListener";
 
@@ -108,13 +108,13 @@ export default class Alerter{
         return this._rootlistener
     }
 
-    initLnrs(remoteId:string){
+    initBaseRemoteControl(remoteId:string){
         this.rootlnr.Listen(`${remoteId}.alert`,e=>{
             // console.log(`${remoteId}.alert `)
             this.Alert(e.data.text)
         })
         this.rootlnr.Listen(`${remoteId}.ask`,e=>{
-            // console.log(`${remoteId}.ask`)
+            // console.log(`${remoteId}.ask`) 
             this.ask(e.data.text,e.data.buttons)
         })
         this.rootlnr.Listen(`${remoteId}.loadify`,e=>{

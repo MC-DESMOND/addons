@@ -513,7 +513,7 @@ export class TextAreaHOC extends InputHOC{
 
     
 export class InputSpiritHOC extends SpiritHOC<React.InputHTMLAttributes<HTMLInputElement>,HTMLInputElement>{
-    protected initHOC(HOC: typeof BaseHOC) {
+    protected initHOC(_HOC: typeof BaseHOC) {
         return InputHOC as any
     }
 }
