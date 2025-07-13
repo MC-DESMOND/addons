@@ -354,11 +354,11 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
             </this.Component>
     }
 }
-type RT<T> =  T
+type RT<T> =  T 
 export class SpiritHOC<CustomProps = RT<{}> ,ElementInterface = HTMLDivElement>{
     component:FC
     soulprops:BaseElementProps<ElementInterface> & CustomProps
-    souls:dict<BaseHOC> = {}
+    bodys:dict<BaseHOC> = {}
     HOCClass
     constructor ({Component=Div as FC<any>,soulprops=({} as BaseElementProps<ElementInterface> & CustomProps),HOCClass = BaseHOC} = {}){
         this.component = Component
@@ -371,7 +371,7 @@ export class SpiritHOC<CustomProps = RT<{}> ,ElementInterface = HTMLDivElement>{
     }
 
      GetSoulBySoulId(soulId:string){ 
-        return this.souls[soulId] 
+        return this.bodys[soulId] 
     }
 
     CreateSoul({soulId,...addSoulprops}:BaseElementProps<ElementInterface>  & {soulId?:string} & CustomProps = {} as any){
@@ -380,7 +380,7 @@ export class SpiritHOC<CustomProps = RT<{}> ,ElementInterface = HTMLDivElement>{
         }
         const body = new this.HOCClass<CustomProps,ElementInterface>({Component:soul as any})
         if (soulId){
-            this.souls[soulId] = body as any
+            this.bodys[soulId] = body as any
         }
         return body
     }
@@ -388,7 +388,7 @@ export class SpiritHOC<CustomProps = RT<{}> ,ElementInterface = HTMLDivElement>{
     RenderSoul = ({soulId,...props}:BaseElementProps<ElementInterface> & dict & {soulId?:string} )=>{
         const body = new this.HOCClass<CustomProps,ElementInterface>({Component:this.component as any})
         if (soulId){
-            this.souls[soulId] = body as any
+            this.bodys[soulId] = body as any 
         }
         return <body.Render {...this.soulprops as any} {...props as any}>{props.children}</body.Render>
     }
