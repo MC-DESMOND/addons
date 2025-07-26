@@ -116,7 +116,7 @@ export default class Alerter{
         return this._rootlistener
     }
 
-    initBaseRemoteControl(remoteId:string){
+    InitBaseRemoteControl(remoteId:string){
         this.rootlnr.Listen(`${remoteId}.alert`,e=>{
             // console.log(`${remoteId}.alert `)
             this.Alert(e.data.text)
