@@ -26,8 +26,19 @@ export default class XListener{
         this.events = new DataSaver("XLISTENER|"+id+"--events")
         this.listeners = new DataSaver("XLISTENER|"+id+"--lnrs")
         this.objectEvent = new ObjectEvent()
+        
     }
 
+    get on(){
+        return this.Listen
+    }
+    get emit(){
+        return this.Announce
+    }
+
+    get off(){
+        return this.Distract
+    }
 
     Listen(key:string,func:(e:XEvent)=>void,lid?:string){
         if (this.objectEvent.has(key)){
