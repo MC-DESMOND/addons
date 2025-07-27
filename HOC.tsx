@@ -358,7 +358,7 @@ type RT<T> =  T
 export class SpiritHOC<CustomProps = RT<{}> ,ElementInterface = HTMLDivElement>{
     component:FC
     soulprops:BaseElementProps<ElementInterface> & CustomProps
-    bodys:dict<BaseHOC> = {}
+    bodys:dict<BaseHOC<{},ElementInterface>> = {}
     HOCClass
     constructor ({Component=Div as FC<any>,soulprops=({} as BaseElementProps<ElementInterface> & CustomProps),HOCClass = BaseHOC} = {}){
         this.component = Component
@@ -370,7 +370,7 @@ export class SpiritHOC<CustomProps = RT<{}> ,ElementInterface = HTMLDivElement>{
         return HOC 
     }
 
-     GetSoulBySoulId(soulId:string){ 
+     GetSoulBySoulId(soulId:string):BaseHOC<{},ElementInterface>{ 
         return this.bodys[soulId] 
     }
 

@@ -1306,7 +1306,8 @@ export type ICssHelper = {
         epubWritingMode?:string
         cssFloat?:string
         cssText?:string
-}
+
+} & dict
 
 
 export type styleKeys = "accentColor"|

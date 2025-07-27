@@ -1,12 +1,21 @@
 "use client"
 
-import React, {ReactNode,  useReducer, useState} from "react"
+import React, {Dispatch, ReactNode,  SetStateAction,  useReducer, useState} from "react"
 
 export type dict<T = any> = {[key:string]:T}
 
 
 export function mergeText(...texts:string[]){
     return texts.join(" ")
+}
+
+export class ReactState<T = undefined>{
+  getter:T | undefined
+  setter: Dispatch<SetStateAction<T | undefined>>;
+  constructor(_:T | undefined = undefined){
+      [this.getter,this.setter] = useState<T | undefined>(_)
+     
+  }
 }
 
 export function isUpper(char: string): boolean {
