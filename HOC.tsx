@@ -38,6 +38,9 @@ import CWind from "./cwind";
      * ```
      * *GUDITTON*
      */
+
+const ROOTDATA_IDENTIFIER = "BASEHOC|__root-data__"
+const ROOTLNR_IDENTIFIER = "BASEHOC|__root-listener__"
 export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>{
     
     protected ref:React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>
@@ -59,9 +62,9 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
     protected clientLoaded = "CLIENT-LOADED"
     protected _onStyleChangeEvent = new ObjectEvent()
     protected props:BaseElementProps<ElementInterface> = {}
-    protected _rootData:DataSaver
-    protected _rootStorage:DataSaver
-    protected _rootListener:XListener
+    protected _rootData = new DataSaver(ROOTDATA_IDENTIFIER,undefined)
+    protected _rootStorage = new DataSaver(ROOTDATA_IDENTIFIER,undefined,"localStorage")
+    protected _rootListener = new XListener(ROOTLNR_IDENTIFIER)
     _
     $
     onStyleChange(styleKey:styleKeys,func:Function){
@@ -179,9 +182,7 @@ export default class BaseHOC<CustomProps = {},ElementInterface = HTMLDivElement>
         this.EffectifyStyle()
         this.cnio = new IObserver()
         this.props = props
-        this._rootData = new DataSaver("BASEHOC|__root-data__",undefined)
-        this._rootStorage = new DataSaver("BASEHOC|__root-data__",undefined,"localStorage")
-        this._rootListener = new XListener("BASEHOC|__root-listener__")
+        
         this._ = this.Render
         this.$ = this.ToRender
 
@@ -358,7 +359,7 @@ type RT<T> =  T
 export class SpiritHOC<CustomProps = RT<{}> ,ElementInterface = HTMLDivElement>{
     component:FC
     soulprops:BaseElementProps<ElementInterface> & CustomProps
-    bodys:dict<BaseHOC<{},ElementInterface>> = {}
+    protected bodys:dict<BaseHOC<{},ElementInterface>> = {}
     HOCClass
     constructor ({Component=Div as FC<any>,soulprops=({} as BaseElementProps<ElementInterface> & CustomProps),HOCClass = BaseHOC} = {}){
         this.component = Component
@@ -374,6 +375,17 @@ export class SpiritHOC<CustomProps = RT<{}> ,ElementInterface = HTMLDivElement>{
         return this.bodys[soulId] 
     }
 
+    get living(){
+        return this.bodys
+    }
+    get livingNamesList(){
+        return Object.keys(this.bodys)
+    }
+    forEachLiving(mapFunc:(...ANY:any[])=>void){
+        for(let name in this.livingNamesList){
+                mapFunc(name,this.GetSoulBySoulId(name))
+        }
+    }
     CreateSoul({soulId,...addSoulprops}:BaseElementProps<ElementInterface>  & {soulId?:string} & CustomProps = {} as any){
         const soul = (props:BaseElementProps<ElementInterface> & CustomProps)=>{
             return <this.component {...this.soulprops} {...addSoulprops} {...props}>{props.children}</this.component>
@@ -523,3 +535,7 @@ export class InputSpiritHOC extends SpiritHOC<React.InputHTMLAttributes<HTMLInpu
         return InputHOC as any
     }
 }
+
+
+export const rootdata = new DataSaver(ROOTDATA_IDENTIFIER,undefined)
+export const rootlnr = new XListener(ROOTLNR_IDENTIFIER)
