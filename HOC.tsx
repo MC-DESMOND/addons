@@ -381,9 +381,9 @@ export class SpiritHOC<CustomProps = RT<{}> ,ElementInterface = HTMLDivElement>{
     get livingNamesList(){
         return Object.keys(this.bodys)
     }
-    forEachLiving(mapFunc:(...ANY:any[])=>void){
-        for(let name in this.livingNamesList){
-                mapFunc(name,this.GetSoulBySoulId(name))
+    forEachLiving(mapFunc:(body:BaseHOC<{},ElementInterface>,name:string)=>void){
+        for(let name of this.livingNamesList){
+                mapFunc(this.GetSoulBySoulId(name),name)
         }
     }
     CreateSoul({soulId,...addSoulprops}:BaseElementProps<ElementInterface>  & {soulId?:string} & CustomProps = {} as any){
