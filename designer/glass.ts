@@ -18,7 +18,6 @@ export namespace glass{
     export const blue:any = glass({r:0,g:10,b:255,op:9,bdo:12});
     export const red:any = glass({r:255,g:10,b:0,op:16,bdo:14});
     export const green:any = glass({r:10,g:255,b:10,op:9,bdo:14});
-
     
 }
 

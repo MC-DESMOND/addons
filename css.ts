@@ -811,7 +811,7 @@ export type ICssHelper = {
         d?:string
         descentOverride?:string
         direction?:string
-        display?:string
+        display?:"flex" | "grid" | "block" | "none" | "inline"
         dominantBaseline?:string
         emptyCells?:string
         fallback?:string
@@ -1117,7 +1117,7 @@ export type ICssHelper = {
         transitionDuration?:string
         transitionProperty?:string
         transitionTimingFunction?:string
-        translate?:string
+        translate?:string | any
         types?:string
         unicodeBidi?:string
         unicodeRange?:string

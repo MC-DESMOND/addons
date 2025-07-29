@@ -1,15 +1,15 @@
 "use client"
 import { dict, useStateUpdate } from "./anys";
 import BaseHOC from "./HOC";
-import { BaseElementProps, Div, EButton } from "./csml";
+import { BaseElementProps, CTextArea, Div, EButton, TextArea } from "./csml";
 import { DocumentAddStyle, ICssHelper } from "./css";
-import {  ReactNode } from "react";
+import {  ReactNode, useEffect } from "react";
 import HeadWind from "./cwind";
 // import DataSaver from "./DataSaver";
 import CWind from "./cwind";
 import XListener from "./ExtensibleListener";
 
-type DictButton = {innerText:ReactNode} & BaseElementProps<HTMLDivElement>
+type DictButton = {innerText?:ReactNode} & BaseElementProps<HTMLDivElement>
 const LoadifyBootstrapActivate = ()=>{
     DocumentAddStyle(`    
         .loadingIcon { width: 50px; aspect-ratio: 1; display: grid; color: #ffffff; background: radial-gradient(farthest-side, currentColor calc(100% - 6px),#0000 calc(100% - 5px) 0); -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 13px),#000 calc(100% - 12px)); border-radius: 50%; animation: l19 2s infinite linear; } 
@@ -177,6 +177,7 @@ export default class Alerter{
         this.previousAlert = "ALERT"
     }
 
+
     Iconify(com:ReactNode,buttons:DictButton[] = [],tapParentToClose?:boolean){
         if (this.remote){
             this.rootlnr.Announce(`${this.remote}.iconify`,{data:{text:com}})
@@ -185,6 +186,27 @@ export default class Alerter{
         this.ask(com,buttons,tapParentToClose)
         this.previousAlert = "ICONIFY"
        
+    }
+    Input({text = "" as ReactNode,button = {} as DictButton 
+    ,props= {} as BaseElementProps<HTMLDivElement>,cancel = {}as DictButton, valuer =()=>""}){
+        const btn = {innerText:"Continue",fontWeight:"bold",...button}
+        const Element = ()=>{
+                const input = new BaseHOC({Component:CTextArea})
+                useEffect(()=>{input.Execute(el=>{
+                        el.innerText = valuer()
+                    })})
+                return <Div width="100%" boxSizing="border-box" {...CWind.FlexColumnAllCenter("10px")} overflow="hidden" >
+                <Div width="100%" overflowWrap="break-word">{text}</Div>
+            <Div width="100%" boxSizing="border-box">
+                <input._  contentEditable width="100%" backgroundColor="rgba(86, 86, 86, 0.64)"  padding="10px" borderRadius="5px" boxSizing="border-box" outline="none" border="none" minHeight="70px" maxHeight="200px" {...props}>{props.children}</input._ >
+            </Div></Div>}
+        this.Iconify(
+            <Element/>
+        ,[{
+            ...btn,
+            innerText:"Cancel",
+            ...cancel
+        },btn],true)
     }
 
     Loadify(text?:ReactNode,{className,loadifyWrapperStyle = {gap:"20px"},style = {background:"transparent"}}:{className?:string ,style?:ICssHelper,loadifyWrapperStyle?:ICssHelper} = {}){
@@ -210,7 +232,7 @@ export default class Alerter{
         this.update = update
         
         // console.log(this.update)
-        return <this.wrapper._ comment="Alerter"  background="rgba(0,0,0,0.7)" backdropFilter="blur(10px)" {...(this.wrapperStyle as dict)} position="fixed" width="100vw" height="100vh" top="0" left="0"  zIndex="1000" display={this.display} placeItems="center" onClick={
+        return <this.wrapper._ comment="Alerter"  background="rgba(0,0,0,0.7)" backdropFilter="blur(10px)" {...(this.wrapperStyle as dict)} position="fixed" width="100vw" height="100vh" top="0" left="0"  zIndex="1000" display={this.display as any} placeItems="center" onClick={
             (e)=>{
                 this.wrapper.Execute((element)=>{
                     if (e.target == element){
