@@ -1,7 +1,7 @@
 "use client"
 import { dict, useStateUpdate } from "./anys";
 import BaseHOC from "./HOC";
-import { BaseElementProps, CTextArea, Div, EButton, TextArea } from "./csml";
+import { BaseElementProps, CTextArea, Div, EButton } from "./csml";
 import { DocumentAddStyle, ICssHelper } from "./css";
 import {  ReactNode, useEffect } from "react";
 import HeadWind from "./cwind";
