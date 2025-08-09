@@ -232,7 +232,7 @@ import { ICssHelper } from "./css";
             ...pairIf("gap",gap),
             display:"grid",
             gridTemplateColumns:`repeat(auto-fit, minmax(${minmax})`
-        }
+        }as ICssHelper
     }
     export function GridColumnCenterAutoFitMinMax(minmax:string = "250px , 1fr",gap?:string){
         return {
@@ -240,7 +240,7 @@ import { ICssHelper } from "./css";
             display:"grid",
             gridTemplateColumns:`repeat(auto-fit, minmax(${minmax})`,
             placeItems:"center"
-        }
+        }as ICssHelper
     }
     export function Iconify(size:number){
     return {...GridColumnCenter("")
@@ -252,7 +252,7 @@ import { ICssHelper } from "./css";
             ...pairIf("gap",gap),
             display:"grid",
             gridTemplateRows:`repeat(auto-fit, minmax(${minmax})`
-        }
+        }as ICssHelper
     }
     export function GridRowCenterAutoFitMinMax(minmax:string = "250px , 1fr",gap?:string){
         return {
@@ -268,7 +268,7 @@ import { ICssHelper } from "./css";
             backgroundColor:val,
             background:val
             
-        }
+        }as ICssHelper
     }
     export function OverflowOnlyY(overflowY:string = "auto"){
         return{
@@ -286,7 +286,7 @@ import { ICssHelper } from "./css";
     export function TransitionMerge(names:string[], transition:string){
         return {
             transition:names.map((name)=>`${name} ${transition}`).join(", ")
-        }
+        }as ICssHelper
     }
 }
 
