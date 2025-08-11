@@ -6,7 +6,7 @@ import { BaseElementProps } from "../csml"
 import { Clientable } from "../anys"
 
 export default class Glow{
-    protected color:string
+    color:string
     protected size:number
     soul:BaseHOC
     protected speed:number
@@ -41,6 +41,10 @@ export default class Glow{
     }
     protected gradifyColor(color:string){
         return `radial-gradient(circle,${color} , rgba(0, 0, 0, 0) 50%)`
+    }
+    OverrideGradifyColor (color:string){
+        this.color = color
+        this.soul.style.background(this.color)
     }
     set Color(color:string){
         this.color = this.gradifyColor(color)

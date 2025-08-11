@@ -62,7 +62,7 @@ export function filterOutStyles(Styles:any = {}){
   return propforit
 }
 
-export type BaseElementProps<T> =  ICssHelper & React.DetailedHTMLProps<React.HTMLAttributes<T>,T> & PropsWithChildren & dict &{
+export type BaseElementProps<T = HTMLDivElement> =  ICssHelper & React.DetailedHTMLProps<React.HTMLAttributes<T>,T> & PropsWithChildren & dict &{
   comment?:string | null,
   Ref?:any,
   translate?:any | string,
