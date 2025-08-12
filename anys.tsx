@@ -18,6 +18,17 @@ export class ReactState<T = undefined>{
   }
 }
 
+export function randomInt(start: number, end?: number, step: number = 1): number {
+  let output: number[] = [];
+
+  // If only one argument is provided, treat it like range(end)
+  if (end === undefined) {
+    end = start;
+    start = 0;
+  }
+  return Math.floor(Math.random() * (end-start))+start
+}
+
 export function randomRGB(alpha: number = 1): string {
   const r = Math.floor(Math.random() * 256); // 0-255
   const g = Math.floor(Math.random() * 256); // 0-255

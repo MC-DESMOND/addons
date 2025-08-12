@@ -28,8 +28,10 @@ export default class MessageHOC{
     protected AnimationClassifier
     protected isWaiting
     protected current
+    protected dangerouslyOn
     constructor({
         time = 1000, effect = "ease-in-out", 
+        dangerouslyOn = false,
         anime = {
             off : {opacity:"0",scale:"0.7"} , 
             on : {opacity:"1",scale:"1"} , 
@@ -39,15 +41,22 @@ export default class MessageHOC{
         this.core = new BaseHOC()
         this.time = time
         this.effect = effect
-        this.anime = anime
+        this.anime = {
+            off : {opacity:"0",scale:"0.7"} , 
+            on : {opacity:"1",scale:"1"} , 
+            before:{display:"block"}, 
+            after:{display:"none"} 
+        } as Ianime
         this.isWaiting = false
         this.animating = false
+        this.dangerouslyOn = dangerouslyOn
         this.AnimationClassifier = {
             "on":()=>this.on(),
             "delay":(time:number)=>this.delay(time),
             "off":()=>this.off(),
         }
         this.current = 0
+        this.updateAnime(anime)
     }
 
     get Core(){
@@ -84,18 +93,20 @@ export default class MessageHOC{
     }
     
     off(){
+        this.dangerouslyOn = false
         this.updateCore()
         this.core.Execute(el=>{
             this.core.style.addStyle(this.anime.off || {})
             setTimeout(() => {
                 this.core.style.addStyle(this.anime.after || {})
                 this.onOff()
+                
             }, this.time);
         })
     }
 
     _ = (props:BaseElementProps)=>{
-        return <this.core._ position="fixed" {...this.anime.off} {...this.anime.after} {...props}>
+        return <this.core._ position="fixed" {...(this.dangerouslyOn?this.anime.on:this.anime.off)} {...this.dangerouslyOn?this.anime.before:this.anime.after} {...props}>
             {props.children}
         </this.core._>
     }
