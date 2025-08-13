@@ -1,11 +1,11 @@
 import { rgba } from "../anys";
 
-export namespace glass{
+namespace glass{
     export var blur = 20
     export function glass({r=100,g=100,b=100,op=25,bdo=14,bd=1,br=blur} = {}){
         return {
              backdropFilter:`blur(${br}px)`
-            ,background:rgba(r,g,b,op/100)
+            ,backgroundColor:rgba(r,g,b,op/100)
             ,border:bd+"px solid "+rgba(r,g,b,bdo/100)
         }
     }

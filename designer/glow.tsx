@@ -1,9 +1,10 @@
 import { useEffect } from "react"
 import HeadWind from "../cwind"
 import BaseHOC from "../HOC"
-import { BaseElementProps } from "../csml"
+import { BaseElementProps, Div } from "../csml"
 // import { ICssHelper } from "../css"
-import { Clientable } from "../anys"
+import { Clientable, dict } from "../anys"
+import CWind from "../cwind"
 
 export default class Glow{
     protected color:string
@@ -164,4 +165,11 @@ export default class Glow{
         },[])
         return <this.soul.Render background={this.color}  opacity={`${this.opacity}`} {...HeadWind.Square(`${this.size}px`)} position="absolute" zIndex="0"  borderRadius="50%"  top={`${this.position[1]}%`} left={`${this.position[0]}%`} translate={`-${this.position[0]}% -${this.position[1]}%`} {...props} {...{transition:HeadWind.TransitionMerge(["background","opacity","background-color","background-image"],"0.3s ease-in-out").transition + (props.transition?`, ${props.transition}`:"") + (this.props.transition?`, ${this.props.transition}`:"")}}></this.soul.Render>
     }
+}
+
+export function StaticGlow({size=400,opacity=50,color="white",position=[50,50]}:{size?:number,opacity?:number,color?:string,position?:[number,number]}& dict = {}){
+    return <Div overflow="visible"  {...CWind.GridColumnCenter("")}  width="1px" height="1px" position="fixed" top={`${position[1]}%`} left={`${position[0]}%`} >
+        <Div {...CWind.Square(`${size*2}px`)} opacity = {`${opacity/100}`} background={`radial-gradient(circle,${color},transparent 50%)`}  position="absolute">
+        </Div>
+    </Div>
 }

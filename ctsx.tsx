@@ -227,9 +227,8 @@ export const Hidden:FC<BaseElementProps<HTMLDivElement>> = function (props){
   </Div>
 }
 
-export const CTextArea:FC<BaseElementProps<HTMLDivElement>> = function (props:BaseElementProps<HTMLDivElement>&{value?:string}){
+export const DivTextArea:FC<BaseElementProps<HTMLDivElement>> = function (props:BaseElementProps<HTMLDivElement>&{value?:string}){
 
-  return <Div textAlign="left" minHeight="60px" height="fit-content" overflow="hidden" color="white" backgroundColor="rgba(79, 79, 79, 1)" overflowY="auto" overflowX="hidden" {...props}>
-    <Div textAlign="inherit" contentEditable width="100%" height="100%" display="inline" gap="0" dangerouslySetInnerHTML={{__html:props.value as any}}></Div>
+  return <Div contentEditable textAlign="left" minHeight="60px" borderRadius="6px"  height="fit-content" overflow="hidden" color="white" backgroundColor="rgba(79, 79, 79, 1)" overflowY="auto" overflowX="hidden" {...props}>
   </Div>
 }

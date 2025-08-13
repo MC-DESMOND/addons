@@ -4,6 +4,7 @@ import React, { FC, ReactNode, useEffect } from "react"
 import { dict, ListChildren } from "./anys"
 import { BaseElementProps, Div } from "./csml"
 import BaseHOC from "./HOC"
+import { ICssHelper } from "./css"
 // import {LastIndex, useUpdate} from "./anys"
 
 
@@ -39,8 +40,11 @@ export default class SliderHOC{
         this._ = this.Render
         this.gap = gap
     }
+    slide(index:(i:number)=>number):void;
 
+    slide(index:number):void;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+
     slide(index:number | Function){
         const lastIndex = this.children.length-1
         const lengthOf = this.children.length
@@ -126,7 +130,8 @@ export default class SliderHOC{
                 overflow:"auto",
                 // padding:`${this.gap!=0? this.gap/2:this.gap}px`,
                 boxSizing:'border-box'
-            }
+            } as ICssHelper
+            
             return<Div comment={`FrameHOC wrap index:${index}`} {...FStyle} key={index}
             overflow="hidden"
             padding={`${this.gap!=0? this.gap/2:this.gap}px`}
