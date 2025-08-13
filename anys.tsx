@@ -238,7 +238,7 @@ export function Clientable(func:Function){
             if (inWindow == true){
                 func()
             }else{
-              setTimeout(Windowfiy, 1);
+              requestAnimationFrame(Windowfiy);
             }
            
         }

@@ -110,7 +110,7 @@ export default class XListener{
         this.objectEvent.clearEvent(key)
     }
 
-    Announce(key:string,xevent:XEvent){
+    Announce(key:string,xevent:XEvent = {data:{}} as XEvent){
         if (this.events.has(key)){
             xevent.called = this.events.load(key).called
         }else{

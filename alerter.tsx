@@ -1,7 +1,7 @@
 "use client"
 import { dict, useStateUpdate } from "./anys";
 import BaseHOC from "./HOC";
-import { BaseElementProps, CTextArea, Div, EButton } from "./csml";
+import { BaseElementProps, DivTextArea, Div, EButton } from "./csml";
 import { DocumentAddStyle, ICssHelper } from "./css";
 import {  ReactNode, useEffect } from "react";
 import HeadWind from "./cwind";
@@ -85,6 +85,10 @@ export default class Alerter{
         
     }
     close(){
+        if (this.remote){
+            this.rootlnr.Announce(`${this.remote}.close`)
+            return
+        }
         this.display = "none"
         this.control.style.addStyle(this.closeStyle)
         this.isOpened = false
@@ -132,6 +136,10 @@ export default class Alerter{
         this.rootlnr.Listen(`${remoteId}.iconify`,e=>{
             // console.log(`${remoteId}.iconify`)
             this.Iconify(e.data.text,e.data.tpc)
+        })
+        this.rootlnr.Listen(`${remoteId}.close`,e=>{
+            // console.log(`${remoteId}.iconify`)
+            this.close()
         })
     }
  
@@ -191,14 +199,14 @@ export default class Alerter{
     ,props= {} as BaseElementProps<HTMLDivElement>,cancel = {}as DictButton, valuer =()=>""}){
         const btn = {innerText:"Continue",fontWeight:"bold",...button}
         const Element = ()=>{
-                const input = new BaseHOC({Component:CTextArea})
+                const input = new BaseHOC({Component:DivTextArea})
                 useEffect(()=>{input.Execute(el=>{
                         el.innerText = valuer()
                     })})
                 return <Div width="100%" boxSizing="border-box" {...CWind.FlexColumnAllCenter("10px")} overflow="hidden" >
                 <Div width="100%" overflowWrap="break-word">{text}</Div>
             <Div width="100%" boxSizing="border-box">
-                <input._  contentEditable width="100%" backgroundColor="rgba(86, 86, 86, 0.64)"  padding="10px" borderRadius="5px" boxSizing="border-box" outline="none" border="none" minHeight="70px" maxHeight="200px" {...props}>{props.children}</input._ >
+                <input._   width="100%" backgroundColor="rgba(86, 86, 86, 0.64)"  padding="10px" borderRadius="5px" boxSizing="border-box" outline="none" border="none" minHeight="70px" maxHeight="200px" {...props}>{props.children}</input._ >
             </Div></Div>}
         this.Iconify(
             <Element/>
@@ -294,9 +302,14 @@ export class DangerousLoadify{
     public text:BaseHOC
     public flex
     public gap
+    protected rootlnr
+    protected remote:string | undefined
     _
     update:any
-    constructor(iconClassName:string = "loadingIcon",{message = undefined as string | undefined,openOnStart = true,flex="row",gap="20px"} = {}){
+    get Remote(){
+        return this.remote
+    }
+    constructor(iconClassName:string = "loadingIcon",{message = undefined as string | undefined,remote = undefined as undefined | string,openOnStart = true,flex="row",gap="20px"} = {}){
         this.time = 0.5
         this.wrapper = new BaseHOC()
         this.text = new BaseHOC()
@@ -310,12 +323,33 @@ export class DangerousLoadify{
         this._message = message
         this.flex = flex
         this.gap = gap
+        this.remote = remote
+        this.rootlnr = new XListener("DANGEROUS-LOADIFY|")
         this._ = this.Render
         LoadifyBootstrapActivate()
  
 
     }
+
+    InitBaseRemoteControl(remoteId:string){
+        this.rootlnr.Listen(remoteId,e=>{
+            if (e.data.funcName){
+                (this as any)[e.data.funcName](...(e.data.args || []))
+            }
+        })
+    }
+
+    protected RemoteCommit(funcName:string,...args:any){
+        if (this.remote){
+            this.rootlnr.Announce(this.remote as string,{data:{funcName,args}})
+        }
+        return this.remote != undefined
+    }
+
     textInnerText(value:string | undefined){
+        if (this.RemoteCommit("textInnerText",value)){
+            return  
+        }
         this.text.Execute((_element)=>{
             if (value){
                 this.text.style.display("block")
@@ -326,12 +360,19 @@ export class DangerousLoadify{
         })
     }
 
-
+    awaitWrapper(func:Function){
+        const f = ()=>{if (this.wrapper.Element){
+                func
+            }else{
+                requestAnimationFrame(f)
+            }}
+        f()
+    }
 
     Render =({children}:{children?:any})=>{
         this.update = useStateUpdate()
-        
-        return <this.wrapper._ background="rgba(0,0,0,0.7)" zIndex="2000" backdropFilter="blur(10px)" opacity={this.openOnStart == true?"1":"0"} transition={`opacity ${this.time}s ease-in-out`} {...this.wrapperProps as any} position="fixed" top="0px" left="0px" {...HeadWind.Square("v")} {...HeadWind.GridColumnCenter("")}>
+
+        return <this.wrapper._ comment={"DANGEROUS-LOADIFY"} background="rgba(0,0,0,0.7)" zIndex="2000" backdropFilter="blur(10px)" opacity={this.openOnStart == true?"1":"0"} transition={`opacity ${this.time}s ease-in-out`} {...this.wrapperProps as any} position="fixed" top="0px" left="0px" {...HeadWind.Square("v")} {...HeadWind.GridColumnCenter("")}>
                {children}
                 <Div {...HeadWind.Square("fit")} {...HeadWind.FlexRowAllCenter(this.gap)} flexDirection={this.flex} transform={this.openOnStart == true?"translateY(0px)":`translateY(${this.iconTranslate})`} transition={`transform ${this.time}s ease-in-out`}>
                     <this.icon._  className={this.loadingIconClassName}  {...this.iconProps as any}>
@@ -341,30 +382,44 @@ export class DangerousLoadify{
             </this.wrapper._>
     }
     addWrapperProps(props:ICssHelper){
+        if (this.RemoteCommit("addWrapperProps",props)){
+            return  
+        }
         this.wrapperProps = {...this.wrapperProps,...props}
     }
     addIconProps(props:ICssHelper){
+        if (this.RemoteCommit("addIconProps",props)){
+            return  
+        }
         this.iconProps = {...this.iconProps,...props}
     }
     setLoadingIconClassName(name:string){
+        if (this.RemoteCommit("setLoadingIconClassName",name)){
+            return  
+        }
         this.loadingIconClassName = name
     }
     open({time=undefined as undefined | number, message = undefined as string |undefined} = {}){
+        if (this.RemoteCommit("open",{time,message})){
+            return  
+        }
         this.time = time || this.time
         message = message || this._message
         this.textInnerText(message)
+        this.wrapper.style.display("grid")
         this.wrapper.style.transition(`opacity ${time}s ease-in-out`)
-        this.icon.style.transition(`transform ${time}s ease-in-out`)
         this.wrapper.style.opacity("1")
-        this.icon.style.transform("translateY(0px)")
-        setTimeout(() => {
-            this.wrapper.style.display("grid")
-        }, this.time * 1000); 
+
+        // console.log("openkfdnnfdkfdf")
+
     }
-    close({time=undefined as undefined | number,message = undefined as string |undefined} = {}){
-        this.textInnerText(message)
-        this.time = time || this.time
-        this.wrapper.style.transform(`translateY(${this.iconTranslate})`)
+    close(){
+        if (this.RemoteCommit("close")){
+            console.log("ran")
+            return  
+        }
+
+        // this.icon.style.transform(`translateY(${this.iconTranslate})`)
         this.wrapper.style.opacity("0")
         setTimeout(() => {
             this.wrapper.style.display("none")
