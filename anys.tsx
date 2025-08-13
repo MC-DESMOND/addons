@@ -3,7 +3,7 @@
 import React, {Dispatch, ReactNode,  SetStateAction,  useReducer, useState} from "react"
 
 export type dict<T = any> = {[key:string]:T}
-
+export type  list<T = any> = T[]
 
 export function mergeText(...texts:string[]){
     return texts.join(" ")
@@ -16,6 +16,79 @@ export class ReactState<T = undefined>{
       [this.getter,this.setter] = useState<T | undefined>(_)
      
   }
+}
+
+export function randomInt(start: number, end?: number, step: number = 1): number {
+  let output: number[] = [];
+
+  // If only one argument is provided, treat it like range(end)
+  if (end === undefined) {
+    end = start;
+    start = 0;
+  }
+  return Math.floor(Math.random() * (end-start))+start
+}
+
+export function randomRGB(alpha: number = 1): string {
+  const r = Math.floor(Math.random() * 256); // 0-255
+  const g = Math.floor(Math.random() * 256); // 0-255
+  const b = Math.floor(Math.random() * 256); // 0-255
+  
+  // Ensure alpha stays between 0 and 1
+  const a = Math.min(Math.max(alpha, 0), 1);
+
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+}
+
+
+export function randomRGBA(): string {
+  const r = Math.floor(Math.random() * 256); // 0-255
+  const g = Math.floor(Math.random() * 256); // 0-255
+  const b = Math.floor(Math.random() * 256); // 0-255
+  const a = Math.random().toFixed(2);        // 0.00 - 1.00
+
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+}
+
+export function range(start: number, end?: number, step: number = 1): number[] {
+  let output: number[] = [];
+
+  // If only one argument is provided, treat it like range(end)
+  if (end === undefined) {
+    end = start;
+    start = 0;
+  }
+
+  // Step validation
+  if (step === 0) throw new Error("Step cannot be 0");
+
+  // Handle positive and negative steps
+  if (step > 0) {
+    for (let i = start; i < end; i += step) {
+      output.push(i);
+    }
+  } else {
+    for (let i = start; i > end; i += step) {
+      output.push(i);
+    }
+  }
+
+  return output;
+}
+
+export function ShallowListifyDict(Dict:dict):list<list> {
+  let result:list[]  = []
+    for (let key of Object.keys(Dict)){
+        result.push([key])
+    }
+    for (let idx in Object.keys(Dict)){
+        result[idx].push(Object.values(Dict)[idx])
+    }
+  return result
+}
+
+export async function delay(ms: number) {
+    return await new  Promise( resolve => setTimeout(resolve, ms) );
 }
 
 export function isUpper(char: string): boolean {

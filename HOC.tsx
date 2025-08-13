@@ -46,6 +46,7 @@ export default class BaseHOC<CustomProps = {}, ElementInterface = HTMLDivElement
     protected ref: React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>
     public style
     protected medias: dict<AtMedia> = {}
+    private variablesConst: dict = {}
     private variables: dict = {}
     public remote
     public Addons: dict<any[]> = {}
@@ -58,11 +59,10 @@ export default class BaseHOC<CustomProps = {}, ElementInterface = HTMLDivElement
     protected setAddons: any
     protected setAddonProps: any
     protected addonProps: dict = {}
-    protected ConstTypeName = "-Const"
-    protected onChangeTypeName = "-ChangeFunc"
     protected EventControl = new ObjectEvent()
     protected clientLoaded = "CLIENT-LOADED"
     protected _onStyleChangeEvent = new ObjectEvent()
+    protected onChangeEvent = new ObjectEvent()
     protected props: BaseElementProps<ElementInterface> = {}
     protected _rootData = new DataSaver(ROOTDATA_IDENTIFIER, undefined)
     protected _rootStorage = new DataSaver(ROOTDATA_IDENTIFIER, undefined, "localStorage")
@@ -80,6 +80,7 @@ export default class BaseHOC<CustomProps = {}, ElementInterface = HTMLDivElement
     }
 
     get access() {
+        
         return this.variables
     }
 
@@ -90,33 +91,28 @@ export default class BaseHOC<CustomProps = {}, ElementInterface = HTMLDivElement
         return this._rootStorage
     }
 
-    SetVariable(name: string, value?: any, onChange?: (name?: string, val?: any) => void) {
-        let key = ReplaceAll(name, this.ConstTypeName, "")
-        key = ReplaceAll(key, this.onChangeTypeName, "")
-        if (!this.variables[key + this.ConstTypeName]) {
-            if (!(onChange == undefined)) {
-                this.variables[key + this.onChangeTypeName] = onChange
-            } else if (!this.variables[key + this.onChangeTypeName]) {
-                this.variables[key + this.onChangeTypeName] = (_name?: string, _val?: any) => { }
-            }
-            if (!(value == undefined)) {
-                if (this.variables[key]) {
-                    this.variables[key + this.onChangeTypeName](key, value)
-                }
-                this.variables[key] = value
-
-            }
-        } else {
-            console.log("tried assigning to a const variable: ", this.variables[key], " with value:", value)
+    SetVariable(name: string, value?: any, onChange?: (name?: string, val?: any) => void,Const = false) {
+        if (typeof(value)== "function"){
+            value = value(this.get(name))
         }
+        // console.log(name)
+        if (!this.has(name) || !this.variablesConst[name]){
+            this.variables[name] = value
+            this.variablesConst[name] = Const
+        }
+        onChange && this.onChangeEvent.clearEvent(name)
+        this.onChangeEvent.emit(name,this.get(name))
+        onChange && this.onChangeEvent.on(name,onChange)
+        
     }
 
     set(name: string, value?: any, onChange?: (name?: string, val?: any) => void) {
+        
         this.SetVariable(name, value, onChange)
     }
 
     hasVariable(name: string) {
-        return this.GetVariable(name) != undefined
+        return this.variables[name] != undefined
     }
 
     has(name: string) {
@@ -137,34 +133,16 @@ export default class BaseHOC<CustomProps = {}, ElementInterface = HTMLDivElement
         this._rootListener.Distract(key)
     }
 
-    ConstVariable(name: string, value: any) {
-        let key = ReplaceAll(name, this.ConstTypeName, "")
-        key = ReplaceAll(key, this.onChangeTypeName, "")
-        if (!this.variables[key + this.ConstTypeName]) {
-            this.variables[key] = value
-            this.variables[key + this.ConstTypeName] = true
-        } else {
-            console.log("tried assigning to a const variable: ", this.variables[key], " with value:", value)
-        }
-
-    }
-
     GetVariable(name: string) {
-        // let key = ReplaceAll(name, this.ConstTypeName,"")        
         return this.variables[name]
     }
     get(name: string) {
         return this.GetVariable(name)
     }
 
-    GetVariableType(name: string) {
-        // let key = ReplaceAll(name, this.ConstTypeName,"") 
-        return typeof (this.variables[name])
-    }
 
     IsVariableConst(name: string) {
-        let key = ReplaceAll(name, this.ConstTypeName, "")
-        return this.variables[key + this.ConstTypeName]
+        return Boolean(this.variablesConst[name])
     }
 
     GetAllVariables() {

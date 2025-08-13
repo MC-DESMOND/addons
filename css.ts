@@ -811,7 +811,7 @@ export type ICssHelper = {
         d?:string
         descentOverride?:string
         direction?:string
-        display?:"flex" | "grid" | "block" | "none" | "inline"
+        display?:"flex" | "grid" | "block" | "none" | "inline" | string
         dominantBaseline?:string
         emptyCells?:string
         fallback?:string
