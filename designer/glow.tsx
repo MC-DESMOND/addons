@@ -171,9 +171,9 @@ export default class Glow{
     }
 }
 
-export function StaticGlow({size=400,opacity=50,color="white",position=[50,50]}:{size?:number,opacity?:number,color?:string,position?:[number,number]}& dict = {}){
-    return <Div overflow="visible"  {...CWind.GridColumnCenter("")}  width="1px" height="1px" position="fixed" top={`${position[1]}%`} left={`${position[0]}%`} >
-        <Div {...CWind.Square(`${size*2}px`)} opacity = {`${opacity/100}`} background={`radial-gradient(circle,${color},transparent 50%)`}  position="absolute">
+export function StaticGlow({size=400 as number,sizeType="px" as "px" | "vw" | "vh",opacity=50 as number,color="white",position=[50,50] as [number,number],overrideColor=false} = {}){
+    return <Div overflow="visible"  {...CWind.GridColumnCenter("")}  width="1px" height="1px" position="absolute" top={`${position[1]}%`} left={`${position[0]}%`} >
+        <Div {...CWind.Square(`${size*2}${sizeType}`)} opacity = {`${opacity/100}`} background={overrideColor?color:`radial-gradient(circle,${color},transparent 50%)`}  position="absolute">
         </Div>
     </Div>
 }
