@@ -1,0 +1,1 @@
+git clone "https://github.com/MC-DESMOND/addons.git"
