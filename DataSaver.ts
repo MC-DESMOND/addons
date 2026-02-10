@@ -166,6 +166,12 @@ export default class DataSaver{
     has(name:string){
         return this.load(name) != undefined
     }
+    set (name:string, value?:any){
+        this.save(name,value)
+    }
+    get(name:string):any | undefined{
+        return this.load(name)
+    }
     
     __init__(){
         Clientable(()=>{
