@@ -204,8 +204,8 @@ export class DictSaver {
             MainDict[this.id] = {}
         }
     }
-    save(name:string,Dict:dict | undefined){
-        this.store[name] = Dict
+    save(name:string,value:any){
+        this.store[name] = value
         MainDict[this.id] = this.store
     }
     load(name:string):any | undefined{
@@ -217,8 +217,8 @@ export class DictSaver {
     get(name:string):any | undefined{
         return this.load(name)
     }
-    set(name:string,Dict:dict | undefined){
-        this.save(name,Dict)
+    set(name:string,value:any){
+        this.save(name,value)
     }
     has_any(List:string[]){
         let bool:boolean[] = []

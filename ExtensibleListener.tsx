@@ -12,6 +12,7 @@ export interface Listener{
 }
 export interface XEvent{
     called?:number
+    event?:Event | any
     data:any
     key?:string
     listener?:Listener
