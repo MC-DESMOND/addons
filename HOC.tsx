@@ -6,8 +6,8 @@ import { __all__, dict, ReplaceAll, useStateUpdate } from "./anys";
 import { ListChildren } from "./anys";
 import { ObjectEvent } from "./ObjectEvent";
 import IObserver from "./IObserver";
-import DataSaver from "./DataSaver";
-import XListener, { XEvent } from "./ExtensibleListener";
+import DataSaver, { DictSaver } from "./DataSaver";
+import XListener, { DictListener, XEvent } from "./ExtensibleListener";
 import CWind from "./cwind";
 
 /**
@@ -557,3 +557,6 @@ export class InputSpiritHOC extends SpiritHOC<React.InputHTMLAttributes<HTMLInpu
 
 export const rootdata = new DataSaver(ROOTDATA_IDENTIFIER, undefined)
 export const rootlnr = new XListener(ROOTLNR_IDENTIFIER)
+
+export const enddata = new DictSaver(ROOTDATA_IDENTIFIER)
+export const endlnr = new DictListener(ROOTLNR_IDENTIFIER)

@@ -190,3 +190,61 @@ export default class DataSaver{
 
 
 }
+
+let MainDict = {}
+
+
+export class DictSaver {
+    id:string
+    store:dict
+    constructor(id:string){
+        this.id = id
+        this.store = {}
+        if (MainDict[this.id] == undefined){
+            MainDict[this.id] = {}
+        }
+    }
+    save(name:string,Dict:dict | undefined){
+        this.store[name] = Dict
+        MainDict[this.id] = this.store
+    }
+    load(name:string):any | undefined{
+        return MainDict[this.id][name]
+    }
+    has(name:string){
+        return this.load(name) != undefined
+    }
+    get(name:string):any | undefined{
+        return this.load(name)
+    }
+    set(name:string,Dict:dict | undefined){
+        this.save(name,Dict)
+    }
+    has_any(List:string[]){
+        let bool:boolean[] = []
+        for(let key of List){
+            bool.push(this.has(key))
+        }
+        return bool.includes(true)
+    }
+    has_all(List:string[]){
+        let bool:boolean[] = []
+        for(let key of List){
+            bool.push(this.has(key))
+        }
+        return !bool.includes(false)
+    }
+    save_many(Dict:dict){
+        for (let key in Dict){
+            this.save(key,Dict[key])
+        }
+    }
+    load_many(List:string[]){
+        const Dict:dict = {}
+        for(let key of List){
+            Dict[key] = this.load(key)
+        }
+        return Dict
+    }
+
+}
