@@ -7,7 +7,7 @@ import {  ReactNode, useEffect } from "react";
 import HeadWind from "./cwind";
 // import DataSaver from "./DataSaver";
 import CWind from "./cwind";
-import XListener from "./ExtensibleListener";
+import XListener, { DictListener } from "./ExtensibleListener";
 
 type DictButton = {innerText?:ReactNode} & BaseElementProps<HTMLDivElement>
 const LoadifyBootstrapActivate = ()=>{
@@ -59,7 +59,7 @@ export default class Alerter{
     loadingIconClassName = "loadingIcon"
     cache:dict = {}
     _
-    _rootlistener:XListener
+    _rootlistener:DictListener
     openStyle
     closeStyle
     time
@@ -111,9 +111,10 @@ export default class Alerter{
         this.effect = effect
         this.display = "none"
         this._ = this.Render
-        this._rootlistener = new XListener("ALERTER|")
+        this._rootlistener = new DictListener("ALERTER|")
         LoadifyBootstrapActivate()
         this.alert = this.Alert
+        console.log("Alerter initialized with remote:",remote)
     }
 
     get rootlnr(){
@@ -164,6 +165,7 @@ export default class Alerter{
         }
     }
     ask(message:ReactNode,buttons?:DictButton[],tapParentToClose?:boolean){
+        
         if (this.remote){
             this.rootlnr.Announce(`${this.remote}.ask`,{data:{text:message,buttons:buttons}})
             return
@@ -238,8 +240,8 @@ export default class Alerter{
     Render = ({children,...props}:BaseElementProps<HTMLDivElement>)=>{
         const update = useStateUpdate()
         this.update = update
-        
-        // console.log(this.update)
+
+        console.log(this.update)
         return <this.wrapper._ comment="Alerter"  background="rgba(0,0,0,0.7)" backdropFilter="blur(10px)" {...(this.wrapperStyle as dict)} position="fixed" width="100vw" height="100vh" top="0" left="0"  zIndex="1000" display={this.display as any} placeItems="center" onClick={
             (e)=>{
                 this.wrapper.Execute((element)=>{

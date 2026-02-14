@@ -10,6 +10,9 @@ export class ObjectEvent{
         if (!this.has(eventName)) {
             this.events[eventName] = [];
         }
+        if (this.events[eventName].includes(callback)) {
+            return
+        }
         this.events[eventName].push(callback);
     }
     has(eventName:string){
@@ -37,7 +40,8 @@ export class ObjectEvent{
             return
         }
         if (this.events[eventName]) {
-            this.events[eventName].forEach(callback => callback(...args));
+           
+            this.events[eventName].map(callback =>callback(...args));
         }
     }
     

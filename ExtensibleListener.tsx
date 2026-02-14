@@ -13,7 +13,7 @@ export interface Listener{
 export interface XEvent{
     called?:number
     event?:Event | any
-    data:any
+    data?:any
     key?:string
     listener?:Listener
     target?:Element
@@ -125,13 +125,15 @@ export default class XListener{
 
 }
 
+let ListenerMap = new Map<string,XListener>()
+
 export class DictListener{
     events:DictSaver
     listeners:DictSaver
     private objectEvent:ObjectEvent
-    constructor(id:string){
-        this.events = new DictSaver("XLISTENER|"+id+"--events")
-        this.listeners = new DictSaver("XLISTENER|"+id+"--lnrs")
+    constructor(id:string,initialMap = undefined as Map<string,XListener> | undefined  ){
+        this.events = new DictSaver("XLISTENER|"+id+"--events",initialMap || ListenerMap)
+        this.listeners = new DictSaver("XLISTENER|"+id+"--lnrs",initialMap || ListenerMap)
         this.objectEvent = new ObjectEvent()
     }
 
@@ -147,9 +149,11 @@ export class DictListener{
 
     Listen(key:string,func:(e:XEvent)=>void,lid?:string){
         if (this.objectEvent.has(key)){
+            this.objectEvent.clearEvent(key)
             this.objectEvent.on(key,func)
             return
         }
+        this.objectEvent.clearEvent(key)
         this.objectEvent.on(key,func)
         const listenid:string = lid || key
         let listener:Listener = this.listeners.has(listenid)?this.listeners.load(listenid):{
@@ -158,7 +162,7 @@ export class DictListener{
                 key:key,
                 destroyed:false
             }as Listener
-        const Caller = (e:XEvent)=>this.objectEvent.emit(key,e)
+        const Caller = (e:XEvent)=>{this.objectEvent.emit(key,e)}
         let xevent:XEvent
             if (this.listeners.has(listenid)){
             if (listener.destroyed){
@@ -174,12 +178,11 @@ export class DictListener{
             if (this.events.has(key)){
                 xevent = this.events.load(key)
                 if ((xevent.called as any) > listener.called){
-                    /* console.log(xevent.called)
-                    console.log(called) */
+                    
                     listener.called = xevent.called as any
                     xevent.listener = listener
                     // Clientable(()=>{
-                        this.listeners.save(listenid,listener)
+                    this.listeners.save(listenid,listener)
                     // })
                     Caller(xevent)
                 }

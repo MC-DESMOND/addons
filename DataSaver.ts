@@ -191,25 +191,27 @@ export default class DataSaver{
 
 }
 
-let MainDict = {}
+let DefaultMap = new Map<string,dict>() 
 
 
 export class DictSaver {
     id:string
     store:dict
-    constructor(id:string){
+    mainMap:Map<string,dict>
+    constructor(id:string,initialMap = undefined as Map<string,dict> | undefined){
         this.id = id
         this.store = {}
-        if (MainDict[this.id] == undefined){
-            MainDict[this.id] = {}
+        this.mainMap = initialMap || DefaultMap
+        if (this.mainMap.has(this.id) == undefined){
+            this.mainMap.set(this.id,{})
         }
     }
     save(name:string,value:any){
         this.store[name] = value
-        MainDict[this.id] = this.store
+        this.mainMap.set(this.id,this.store)
     }
     load(name:string):any | undefined{
-        return MainDict[this.id][name]
+        return this.mainMap.get(this.id)?.[name]
     }
     has(name:string){
         return this.load(name) != undefined
