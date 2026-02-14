@@ -114,7 +114,7 @@ export default class Alerter{
         this._rootlistener = new DictListener("ALERTER|")
         LoadifyBootstrapActivate()
         this.alert = this.Alert
-        console.log("Alerter initialized with remote:",remote)
+        // console.log("Alerter initialized with remote:",remote)
     }
 
     get rootlnr(){
@@ -241,7 +241,7 @@ export default class Alerter{
         const update = useStateUpdate()
         this.update = update
 
-        console.log(this.update)
+        // console.log(this.update)
         return <this.wrapper._ comment="Alerter"  background="rgba(0,0,0,0.7)" backdropFilter="blur(10px)" {...(this.wrapperStyle as dict)} position="fixed" width="100vw" height="100vh" top="0" left="0"  zIndex="1000" display={this.display as any} placeItems="center" onClick={
             (e)=>{
                 this.wrapper.Execute((element)=>{
@@ -417,7 +417,6 @@ export class DangerousLoadify{
     }
     close(){
         if (this.RemoteCommit("close")){
-            console.log("ran")
             return  
         }
 
