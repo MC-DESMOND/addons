@@ -326,7 +326,7 @@ export class DangerousLoadify{
         this.flex = flex
         this.gap = gap
         this.remote = remote
-        this.rootlnr = new XListener("DANGEROUS-LOADIFY|")
+        this.rootlnr = new DictListener("DANGEROUS-LOADIFY|")
         this._ = this.Render
         LoadifyBootstrapActivate()
  
