@@ -74,6 +74,8 @@ export class Engine{
     }
 }
 
+
+
 export default class DataSaver{
     id:string
     elementId:string
@@ -123,6 +125,8 @@ export default class DataSaver{
             this.engine.innerText = this.enc.encrypt(JSON.stringify(this._variables))
         }
     }
+
+
 
     load(name:string):any | undefined{
         this.collect()
@@ -186,13 +190,33 @@ export default class DataSaver{
         })
     }
 
-    
+    createNode(name:string):SaverNode{
+        return new SaverNode(name,this)
+    }
 
 
 }
 
 let DefaultMap = new Map<string,dict>() 
+export class SaverNode{
+    name:string
+    saver:DictSaver | DataSaver
+    constructor(name:string,saver:DictSaver | DataSaver){
+        this.name = name
+        this.saver = saver
+    }
+    set(value:any){
+        this.saver.set(this.name,value)
+    }
+    get():any | undefined{
+        return this.saver.get(this.name)
+    }
+    has():boolean{
+        return this.saver.has(this.name)
+    }
+    
 
+}
 
 export class DictSaver {
     id:string
@@ -206,6 +230,7 @@ export class DictSaver {
             this.mainMap.set(this.id,{})
         }
     }
+
     save(name:string,value:any){
         this.store[name] = value
         this.mainMap.set(this.id,this.store)
@@ -247,6 +272,9 @@ export class DictSaver {
             Dict[key] = this.load(key)
         }
         return Dict
+    }
+    createNode(name:string):SaverNode{
+        return new SaverNode(name,this)
     }
 
 }

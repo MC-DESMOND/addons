@@ -10,15 +10,15 @@ export interface Listener{
     key:string
     destroyed:boolean
 }
-export interface XEvent{
+export interface IXEvent{
     called?:number
     event?:Event | any
     data?:any
     key?:string
     listener?:Listener
     target?:Element
-}
-
+} 
+type XEvent = IXEvent & Record<string, any>
 export default class XListener{
     events:DataSaver
     listeners:DataSaver
