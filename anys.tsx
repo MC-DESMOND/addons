@@ -361,3 +361,6 @@ export function useStateUpdate(onUpdate:()=>any = ()=>{}){
         return Math.random()
       });
 }
+export function Ebid (id:string){
+  return document.getElementById(id)
+}

@@ -190,7 +190,7 @@ export default class DataSaver{
         })
     }
 
-    createNode(name:string):SaverNode{
+    unique(name:string):SaverNode{
         return new SaverNode(name,this)
     }
 
@@ -213,6 +213,14 @@ export class SaverNode{
     }
     has():boolean{
         return this.saver.has(this.name)
+    }
+    push(value:any){
+        let arr:any[] = this.get() || []
+        if (!Array.isArray(arr)){
+            arr = [arr]
+        }
+        arr.push(value)
+        this.set(arr)
     }
     
 
@@ -273,7 +281,8 @@ export class DictSaver {
         }
         return Dict
     }
-    createNode(name:string):SaverNode{
+    unique(name:string,initial:any = undefined):SaverNode{
+        this.set(name,this.get(name) || initial)
         return new SaverNode(name,this)
     }
 
