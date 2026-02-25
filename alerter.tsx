@@ -1,13 +1,14 @@
 "use client"
 import { dict, useStateUpdate } from "./anys";
 import BaseHOC from "./HOC";
-import { BaseElementProps, DivTextArea, Div, EButton } from "./csml";
+import { BaseElementProps, Div, EButton, TextArea, Input } from "./csml";
 import { DocumentAddStyle, ICssHelper } from "./css";
 import {  ReactNode, useEffect } from "react";
 import HeadWind from "./cwind";
 // import DataSaver from "./DataSaver";
 import CWind from "./cwind";
-import XListener, { DictListener } from "./ExtensibleListener";
+import  { DictListener } from "./ExtensibleListener";
+import { DictSaver, DictSaverDict } from "./DataSaver";
 
 type DictButton = {innerText?:ReactNode} & BaseElementProps<HTMLDivElement>
 const LoadifyBootstrapActivate = ()=>{
@@ -141,6 +142,7 @@ export default class Alerter{
         this.rootlnr.Listen(`${remoteId}.close`,e=>{
             // console.log(`${remoteId}.iconify`)
             this.close()
+            e
         })
     }
  
@@ -198,17 +200,24 @@ export default class Alerter{
        
     }
     Input({text = "" as ReactNode,button = {} as DictButton 
-    ,props= {} as BaseElementProps<HTMLDivElement>,cancel = {}as DictButton, valuer =()=>""}){
-        const btn = {innerText:"Continue",fontWeight:"bold",...button}
+    ,props= {} as BaseElementProps<HTMLDivElement>,cancel = {}as DictButton,state = "ML" as "ML" | "OL", valuer =()=>"",submit =(value:string)=>{value}}){
+        /* ML: Multi Line (TextArea) 
+            OL: One Line (Input)
+        */
+        const valueDict = new DictSaverDict()
+        const valueSaver = new DictSaver("input-value-saver",valueDict)
+        const valueGetter = valueSaver.unique("input-saver",valuer())
+        valueGetter.set(valuer())
+        const btn = {innerText:"Continue",fontWeight:"bold",...button} as DictButton
         const Element = ()=>{
-                const input = new BaseHOC({Component:DivTextArea})
-                useEffect(()=>{input.Execute(el=>{
-                        el.innerText = valuer()
+                const input = new BaseHOC({Component:state == "ML"?TextArea:Input})
+                useEffect(()=>{input.Execute((el:any)=>{
+                        el.value = valuer()
                     })})
                 return <Div width="100%" boxSizing="border-box" {...CWind.FlexColumnAllCenter("10px")} overflow="hidden" >
-                <Div width="100%" overflowWrap="break-word">{text}</Div>
+                <Div width="100%" overflowWrap="break-word" fontWeight="bolder">{text}</Div>
             <Div width="100%" boxSizing="border-box">
-                <input._   width="100%" backgroundColor="rgba(86, 86, 86, 0.64)"  padding="10px" borderRadius="5px" boxSizing="border-box" outline="none" border="none" minHeight="70px" maxHeight="200px" {...props}>{props.children}</input._ >
+                <input._   width="100%" outline="none" backgroundColor="rgba(86, 86, 86, 0.64)" onInput={(el)=>{valueGetter.set(el.target.value)}} padding="10px" borderRadius="5px" boxSizing="border-box"  border="none" minHeight="70px" maxHeight="200px" {...props}>{props.children}</input._ >
             </Div></Div>}
         this.Iconify(
             <Element/>
@@ -216,7 +225,7 @@ export default class Alerter{
             ...btn,
             innerText:"Cancel",
             ...cancel
-        },btn],true)
+        },{...btn,onClick:()=>{submit(valueGetter.get())}}],true)
     }
 
     Loadify(text?:ReactNode,{className,loadifyWrapperStyle = {gap:"20px"},style = {background:"transparent"}}:{className?:string ,style?:ICssHelper,loadifyWrapperStyle?:ICssHelper} = {}){
@@ -255,8 +264,8 @@ export default class Alerter{
         }>
                 {children}
                 <this.control._ minHeight="150px" {...CWind.TransitionMerge([...Object.keys(this.openStyle)],`${this.time}ms ${this.effect}`)} {...this.closeStyle} gap="20px" boxSizing="border-box" minWidth="200px" maxWidth="300px" width="90%" overflowX="hidden"  padding="20px" display="flex" alignItems="center" justifyContent="center" flexDirection="column" borderRadius="15px" background="rgba(80,80,80,0.3)" {...(this.controlStyle as dict)} {...(this.isloadify? this.loadingControlStyle as dict:{})} {...props}>
-                    <this.info._ width="100%" display="flex" justifyContent="center"  gap="20px" alignItems="center" flexDirection="column" {...(this.infoStyle as dict)}>
-                           {this.innerText != undefined && <Div width="100%" textAlign="center" overflowWrap="break-word" overflow="hidden">{this.innerText}</Div>}
+                    <this.info._ width="100%" display="flex" justifyContent="center"  gap="20px" alignItems="center" flexDirection="column" fontWeight="bolder" {...(this.infoStyle as dict)}>
+                           {this.innerText != undefined && <Div width="100%" textAlign="center" overflowWrap="break-word" overflow="hidden" fontWeight="inherit">{this.innerText}</Div>}
                     </this.info._>
                      {this.daButtons.length > 0 && <Div display="grid" width="100%" gap="10px" gridTemplateColumns="repeat(auto-fit,minmax(90px,1fr))">
                         {this.daButtons}
@@ -298,6 +307,7 @@ export class DangerousLoadify{
     public wrapperProps:ICssHelper
     public iconProps:ICssHelper
     public textProps:ICssHelper
+    public subProps:ICssHelper
     public time:number = 0.5
     public openOnStart:boolean
     public iconTranslate:string
@@ -306,23 +316,28 @@ export class DangerousLoadify{
     public gap
     protected rootlnr
     protected remote:string | undefined
+    public sub:BaseHOC
+    protected subMessage:string | undefined
     _
     update:any
     get Remote(){
         return this.remote
     }
-    constructor(iconClassName:string = "loadingIcon",{message = undefined as string | undefined,remote = undefined as undefined | string,openOnStart = true,flex="row",gap="20px"} = {}){
+    constructor(iconClassName:string = "loadingIcon",{message = undefined as string | undefined,subMessage = undefined as string | undefined,remote = undefined as undefined | string,openOnStart = true,flex="row",gap="20px"} = {}){
         this.time = 0.5
         this.wrapper = new BaseHOC()
         this.text = new BaseHOC()
+        this.sub = new BaseHOC()
         this.wrapperProps = {}
         this.textProps = {}
         this.iconProps = {}
+        this.subProps = {}
         this.iconTranslate = "40px"
         this.icon = new BaseHOC()
         this.openOnStart = openOnStart
         this.loadingIconClassName = iconClassName
         this._message = message
+        this.subMessage = subMessage
         this.flex = flex
         this.gap = gap
         this.remote = remote
@@ -361,6 +376,19 @@ export class DangerousLoadify{
             }
         })
     }
+    subInnerText(value:string | undefined){
+        if (this.RemoteCommit("subInnerText",value)){
+            return  
+        }
+        this.sub.Execute((_element)=>{
+            if (value){
+                this.sub.style.display("block")
+                this.sub.innerHTML(value)
+            }else{
+                this.sub.style.display("none")
+            }
+        })
+    }
 
     awaitWrapper(func:Function){
         const f = ()=>{if (this.wrapper.Element){
@@ -374,12 +402,13 @@ export class DangerousLoadify{
     Render =({children}:{children?:any})=>{
         this.update = useStateUpdate()
 
-        return <this.wrapper._ comment={"DANGEROUS-LOADIFY"} background="rgba(0,0,0,0.7)" zIndex="2000" backdropFilter="blur(10px)" opacity={this.openOnStart == true?"1":"0"} transition={`opacity ${this.time}s ease-in-out`} {...this.wrapperProps as any} position="fixed" top="0px" left="0px" {...HeadWind.Square("v")} {...HeadWind.GridColumnCenter("")}>
+        return <this.wrapper._ comment={"DANGEROUS-LOADIFY"} background="rgba(0,0,0,0.7)" zIndex="2000" backdropFilter="blur(10px)" opacity={this.openOnStart == true?"1":"0"} transition={`opacity ${this.time}s ease-in-out`} {...this.wrapperProps as any} position="fixed" top="0px" left="0px" {...HeadWind.Square("v")} {...HeadWind.GridColumnCenter("")} display={this.openOnStart == true?"grid":"none"}>
                {children}
                 <Div {...HeadWind.Square("fit")} {...HeadWind.FlexRowAllCenter(this.gap)} flexDirection={this.flex} transform={this.openOnStart == true?"translateY(0px)":`translateY(${this.iconTranslate})`} transition={`transform ${this.time}s ease-in-out`}>
                     <this.icon._  className={this.loadingIconClassName}  {...this.iconProps as any}>
                         </this.icon._>
-                    <this.text._ fontSize="18px" fontWeight="bolder" {...this.textProps as any} display={this._message?"block":"none"}>{this._message}</this.text._>
+                    <this.text._ fontSize="18px" margin="0" padding="0" fontWeight="bolder" {...this.textProps as any} display={this._message?"block":"none"}>{this._message}</this.text._>
+                    <this.sub._ fontSize="12px" margin="0" padding="0" opacity="0.8" fontWeight="bolder" {...this.subProps as any} display={this.subMessage?"block":"none"}>{this.subMessage}</this.sub._>
                 </Div>
             </this.wrapper._>
     }
@@ -430,3 +459,40 @@ export class DangerousLoadify{
 }
 
 
+export class Loader {
+    loader:BaseHOC
+    loaderClassName:string
+    openStyle = {display:"block"} as ICssHelper
+    closeStyle = {display:"none"} as ICssHelper
+    main:any
+    update:any
+    mainUpdate:any
+    constructor(className:string = "loadingIcon"){
+        this.loader = new BaseHOC()
+        this.loaderClassName = className
+        LoadifyBootstrapActivate()
+        this.main = this.closeStyle
+    }
+    preventUpdate(){
+        this.update =()=>{}
+    }
+    ensureUpdate(){
+        this.update = this.mainUpdate
+    }
+    open(){
+        this.main = this.openStyle
+        this.update()
+    }
+    close(){
+        this.main = this.closeStyle
+        this.update()
+    }
+
+    Render =(props: BaseElementProps)=>{
+        this.mainUpdate = useStateUpdate()
+        this.update = this.mainUpdate
+        return <this.loader._ className={this.loaderClassName} {...props} {...this.main}></this.loader._>
+    }
+    _ = this.Render
+    
+}

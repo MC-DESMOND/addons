@@ -197,7 +197,10 @@ export default class DataSaver{
 
 }
 
-let DefaultMap = new Map<string,dict>() 
+export class DictSaverDict extends Map<string,dict>{}
+// type DictSaverDict = Map<string,dict>
+
+let DefaultMap = new DictSaverDict() 
 export class SaverNode{
     name:string
     saver:DictSaver | DataSaver
@@ -229,11 +232,11 @@ export class SaverNode{
 export class DictSaver {
     id:string
     store:dict
-    mainMap:Map<string,dict>
-    constructor(id:string,initialMap = undefined as Map<string,dict> | undefined){
+    mainMap:DictSaverDict
+    constructor(id:string,store = undefined as DictSaverDict | undefined){
         this.id = id
         this.store = {}
-        this.mainMap = initialMap || DefaultMap
+        this.mainMap = store || DefaultMap
         if (this.mainMap.has(this.id) == undefined){
             this.mainMap.set(this.id,{})
         }

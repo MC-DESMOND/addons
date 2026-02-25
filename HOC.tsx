@@ -2,7 +2,7 @@
 import React, { FC, useEffect, useState } from "react"
 import { CompileStyle, FCssHelper, ICssHelper, styleKeys } from "./css"
 import { BaseElementProps, Div, Hidden, Input, TextArea } from "./csml"
-import { __all__, dict, ReplaceAll, useStateUpdate } from "./anys";
+import { __all__, dict,useStateUpdate } from "./anys";
 import { ListChildren } from "./anys";
 import { ObjectEvent } from "./ObjectEvent";
 import IObserver from "./IObserver";
@@ -365,7 +365,7 @@ export class SpiritHOC<CustomProps = RT<{}>, ElementInterface = HTMLDivElement> 
     component: FC
     soulprops: BaseElementProps<ElementInterface> & CustomProps
     protected bodys: dict<BaseHOC<{}, ElementInterface>> = {}
-    HOCClass
+    HOCClass:typeof BaseHOC
     constructor({ Component = Div as FC<any>, soulprops = ({} as BaseElementProps<ElementInterface> & CustomProps), HOCClass = BaseHOC } = {}) {
         this.component = Component
         this.soulprops = soulprops

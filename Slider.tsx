@@ -10,6 +10,7 @@ import { ICssHelper } from "./css"
 
 export default class SliderHOC{
     children:ReactNode[] = []
+    length = 0
     control:BaseHOC<{SELF?:any}>
     widthDivideList:number[] = []
     direction
@@ -24,7 +25,6 @@ export default class SliderHOC{
     onSlide:Function = (_val:number)=>{}
     onEnd:Function = (_val:number)=>{}
     gap
-    _
     constructor({direction="row",fitContent = false,gap = 10,slideTime = 300,blockLoop = false,effect = "ease-in-out", refType = React.useRef} = {}){
         this.direction = direction
         this.slideTime = slideTime
@@ -37,7 +37,6 @@ export default class SliderHOC{
         )=><this._SliderComponent  {...props}></this._SliderComponent>,
         refee:this.refType((null as any))})
         this.innerFrame = new BaseHOC({Component:Div,refee:this.refType((null as any))})
-        this._ = this.Render
         this.gap = gap
     }
     slide(index:(i:number)=>number):void;
@@ -48,6 +47,9 @@ export default class SliderHOC{
     slide(index:number | Function){
         const lastIndex = this.children.length-1
         const lengthOf = this.children.length
+       /*  console.log("children:", this.children)
+        console.log("children length:", lengthOf)
+        console.log("framehocs:", this.FrameHocs) */
         let inputIndex = typeof index == "function" ? index(this.currentIndex) : (index as number);
 
         this.innerFrame.style.transition(`transform ${this.slideTime}ms ${this.effect}`)
@@ -88,8 +90,10 @@ export default class SliderHOC{
 
         }
         /* console.log(this.direction)
-        console.log(inputIndex) */
-        this.currentIndex = inputIndex%lengthOf
+        console.log(inputIndex)
+        console.log(lengthOf) */
+        this.currentIndex = inputIndex%lengthOf 
+        // console.log("Current index:", this.currentIndex)
         this.onSlide(this.currentIndex)
         // this.ForceUpdate()
     }
@@ -97,11 +101,13 @@ export default class SliderHOC{
     Render:FC<BaseElementProps<HTMLDivElement>> = ({...props}:BaseElementProps<HTMLDivElement>)=>{
         return <this.control._  comment="Slider" {...props}></this.control._>
     }
+    _ = this.Render
 
     protected _SliderComponent = ({...props}:BaseElementProps<HTMLDivElement>)=>{
         const _children = props.children
         const children:ReactNode[] = ListChildren(_children,{})
         this.children = children
+        this.length = children.length
         const Style:dict = {
             ...props.style,
             overflow:"hidden",

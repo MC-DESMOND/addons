@@ -18,6 +18,12 @@ export class ObjectEvent{
     has(eventName:string){
         return Object.keys(this.events).includes(eventName)
     }
+    hasFunc(eventName:string,callback:Function){
+        if (!this.has(eventName)) {
+            return false
+        }
+        return this.events[eventName].map(cb => cb.toString()).includes(callback.toString())
+    }
 
     off(eventName: string, callback: Function) {
         if (!this.has(eventName)) {
@@ -40,7 +46,10 @@ export class ObjectEvent{
             return
         }
         if (this.events[eventName]) {
-           
+            this.events[eventName] = this.events[eventName].filter((callback, index, array) => array.indexOf(callback) === index);
+            // this.events[eventName].forEach((callback, index, array) => {
+            //     const count = array.filter(cb => cb === callback).length;
+            // });
             this.events[eventName].map(callback =>callback(...args));
         }
     }

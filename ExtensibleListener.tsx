@@ -1,4 +1,4 @@
-import { Clientable } from "./anys";
+import { Clientable, dict, randomInt } from "./anys";
 import DataSaver, { DictSaver } from "./DataSaver";
 import { ObjectEvent } from "./ObjectEvent";
 
@@ -18,7 +18,7 @@ export interface IXEvent{
     listener?:Listener
     target?:Element
 } 
-type XEvent = IXEvent & Record<string, any>
+export type XEvent = IXEvent & Record<string, any>
 export default class XListener{
     events:DataSaver
     listeners:DataSaver
@@ -131,10 +131,13 @@ export class DictListener{
     events:DictSaver
     listeners:DictSaver
     private objectEvent:ObjectEvent
+    player:dict<(e:XEvent)=>void>
     constructor(id:string,initialMap = undefined as Map<string,XListener> | undefined  ){
         this.events = new DictSaver("XLISTENER|"+id+"--events",initialMap || ListenerMap)
         this.listeners = new DictSaver("XLISTENER|"+id+"--lnrs",initialMap || ListenerMap)
         this.objectEvent = new ObjectEvent()
+        this.player = {}
+
     }
 
     get on(){
@@ -147,15 +150,22 @@ export class DictListener{
         return this.Distract
     }
 
+
     Listen(key:string,func:(e:XEvent)=>void,lid?:string){
+        this.player[key] = (xevent:XEvent = {data:{}} as XEvent)=>this.Announce(key,xevent)
+        if (this.objectEvent.hasFunc(key,func)){
+            // this.objectEvent.clearEvent(key)
+            // this.objectEvent.off(key,func)
+            return
+        }
         if (this.objectEvent.has(key)){
-            this.objectEvent.clearEvent(key)
+            // this.objectEvent.clearEvent(key)
             this.objectEvent.on(key,func)
             return
         }
-        this.objectEvent.clearEvent(key)
+        // this.objectEvent.clearEvent(key)
         this.objectEvent.on(key,func)
-        const listenid:string = lid || key
+        const listenid:string = lid || key+randomInt(0,9999999).toString()
         let listener:Listener = this.listeners.has(listenid)?this.listeners.load(listenid):{
                 called:0,
                 listenid:listenid,
@@ -164,17 +174,19 @@ export class DictListener{
             }as Listener
         const Caller = (e:XEvent)=>{this.objectEvent.emit(key,e)}
         let xevent:XEvent
-            if (this.listeners.has(listenid)){
+        if (this.listeners.has(listenid)){
             if (listener.destroyed){
                 listener.destroyed = false
             }else{
                 return 
             }
         }
+
         const Loop = () => {
             if(this.listeners.has(listenid)){
-                listener = this.listeners.load(key)
+                listener = this.listeners.load(listenid)
             }
+
             if (this.events.has(key)){
                 xevent = this.events.load(key)
                 if ((xevent.called as any) > listener.called){
@@ -220,4 +232,9 @@ export class DictListener{
         xevent.key = key
         this.events.save(key,xevent)
     }
+    
+    Emit(key:string,xevent:XEvent = {data:{}} as XEvent){
+        this.Announce(key,xevent)
+    }
+    
 }
