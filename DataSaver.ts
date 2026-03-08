@@ -225,6 +225,9 @@ export class SaverNode{
         arr.push(value)
         this.set(arr)
     }
+    toString(){
+        return this.get()
+    }
     
 
 }

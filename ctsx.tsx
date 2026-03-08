@@ -172,6 +172,9 @@ export const RDiv:FC<BaseElementProps<HTMLDivElement>> = function({className,chi
 export const Main:FC<BaseElementProps<HTMLBaseElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="main"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
+export const Svg:FC<BaseElementProps<HTMLBaseElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="svg"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
 export const Section:FC<BaseElementProps<HTMLBaseElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="section"  {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }

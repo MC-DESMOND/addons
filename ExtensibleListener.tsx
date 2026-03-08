@@ -122,6 +122,11 @@ export default class XListener{
         // console.log("pre--",preEvent)
         this.events.save(key,xevent)
     }
+    Announcement(key:string){
+        return (xevent:XEvent = {data:{}} as XEvent)=>{
+            this.Announce(key,xevent)
+        }
+    }
 
 }
 
@@ -137,6 +142,7 @@ export class DictListener{
         this.listeners = new DictSaver("XLISTENER|"+id+"--lnrs",initialMap || ListenerMap)
         this.objectEvent = new ObjectEvent()
         this.player = {}
+        
 
     }
 
@@ -149,6 +155,8 @@ export class DictListener{
     get off(){
         return this.Distract
     }
+    
+
 
 
     Listen(key:string,func:(e:XEvent)=>void,lid?:string){
@@ -232,9 +240,10 @@ export class DictListener{
         xevent.key = key
         this.events.save(key,xevent)
     }
-    
-    Emit(key:string,xevent:XEvent = {data:{}} as XEvent){
-        this.Announce(key,xevent)
+
+    Announcement(key:string){
+        return (xevent:XEvent = {data:{}} as XEvent)=>{
+            this.Announce(key,xevent)
+        }
     }
-    
 }

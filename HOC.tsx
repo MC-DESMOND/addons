@@ -44,7 +44,7 @@ const ROOTLNR_IDENTIFIER = "BASEHOC|__root-listener__"
 export default class BaseHOC<CustomProps = {}, ElementInterface = HTMLDivElement> {
 
     protected ref: React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null>
-    public style
+    public style = { ...FCssHelper, addStyle: (_styleDict: ICssHelper) => { } }
     protected medias: dict<AtMedia> = {}
     private variablesConst: dict = {}
     private variables: dict = {}
@@ -67,7 +67,6 @@ export default class BaseHOC<CustomProps = {}, ElementInterface = HTMLDivElement
     protected _rootData = new DataSaver(ROOTDATA_IDENTIFIER, undefined)
     protected _rootStorage = new DataSaver(ROOTDATA_IDENTIFIER, undefined, "localStorage")
     protected _rootListener = new XListener(ROOTLNR_IDENTIFIER)
-    _
     $
     onStyleChange(styleKey: styleKeys, func: Function) {
         this._onStyleChangeEvent.on(styleKey, func)
@@ -89,6 +88,10 @@ export default class BaseHOC<CustomProps = {}, ElementInterface = HTMLDivElement
     }
     get storage() {
         return this._rootStorage
+    }
+
+    square(value:string){
+        this.style.addStyle({...CWind.Square(value)})
     }
 
     SetVariable(name: string, value?: any, onChange?: (name?: string, val?: any) => void,Const = false) {
@@ -155,16 +158,14 @@ export default class BaseHOC<CustomProps = {}, ElementInterface = HTMLDivElement
         }
     }
 
-
     constructor({ Component = Div, remote, refee = React.useRef(null), props = {} }: { Component?: FC, remote?: Function, props?: BaseElementProps<ElementInterface>, refee?: React.RefObject<ElementInterface> | React.MutableRefObject<undefined> | React.RefObject<null> } = {}) {
         this.ref = refee
         this.remote = remote
-        this.style = { ...FCssHelper, addStyle: (_styleDict: ICssHelper) => { } }
+        
         this.Component = this.InitComponent(Component)
         this.EffectifyStyle()
         this.cnio = new IObserver()
         this.props = props
-        this._ = this.Render
         this.$ = this.ToRender
 
     }
@@ -342,7 +343,7 @@ export default class BaseHOC<CustomProps = {}, ElementInterface = HTMLDivElement
         return <Hidden></Hidden>
     }
 
-    Render = (props: BaseElementProps<ElementInterface> & CustomProps) => {
+    Render = (props: BaseElementProps<ElementInterface> & CustomProps ) => {
         this.forceUpdate = useStateUpdate()
         const addonsState = useState({})
         this.Addons = addonsState[0]
@@ -359,6 +360,8 @@ export default class BaseHOC<CustomProps = {}, ElementInterface = HTMLDivElement
             {Object.values(this.Addons)}
         </this.Component>
     }
+    _ = this.Render
+
 }
 type RT<T> = T
 export class SpiritHOC<CustomProps = RT<{}>, ElementInterface = HTMLDivElement> {
