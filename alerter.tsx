@@ -217,7 +217,7 @@ export default class Alerter{
                 return <Div width="100%" boxSizing="border-box" {...CWind.FlexColumnAllCenter("10px")} overflow="hidden" >
                 <Div width="100%" overflowWrap="break-word" fontWeight="bolder">{text}</Div>
             <Div width="100%" boxSizing="border-box">
-                <input._   width="100%" outline="none" backgroundColor="rgba(86, 86, 86, 0.64)" onInput={(el)=>{valueGetter.set(el.target.value)}} padding="10px" borderRadius="5px" boxSizing="border-box"  border="none" minHeight="70px" maxHeight="200px" {...props}>{props.children}</input._ >
+                <input._   width="100%" outline="none" backgroundColor="rgba(86, 86, 86, 0.64)" onInput={(el)=>{valueGetter.set((el.target as HTMLInputElement).value)}} padding="10px" borderRadius="5px" boxSizing="border-box"  border="none" minHeight="70px" maxHeight="200px" {...props}>{props.children}</input._ >
             </Div></Div>}
         this.Iconify(
             <Element/>

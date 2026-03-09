@@ -78,17 +78,17 @@ function isdigit(obj:any){
     }
 }
 function range(start=0,stop:number){
-    let List = []
+    let List:number[] = []
     for (let i=Number(start); i<=Number(stop);i++){
         List.push(i)
     }
     return List
 }
-function ListInList (parentList:any[] , list2:any[]){
+export function ListInList (parentList:any[] , list2:any[]){
     let re = false
     for(let u in list2){
         if (parentList.includes(list2[u])){
-            let re = true
+            re = true
         }else{
             return false
         }
@@ -139,7 +139,7 @@ class Enc{
                 }
         this.spliter = spliter }
     enc(str:string){
-        let filtrate = []
+        let filtrate:any[] = []
         let string:any = String(str)
         for (let i in string ){
             let o  = string[i]

@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
+// import { ReactNode } from "react";
 import BaseHOC from "./HOC";
 import { ICssHelper } from "./css";
 import CWind from "./cwind";
-import { dict, list } from "./anys";
+import {  list } from "./anys";
 import { BaseElementProps } from "./ctsx";
 
 interface Ianime {
@@ -84,7 +84,7 @@ export default class MessageHOC{
     onOff = ()=>{}
     on(){
         this.updateCore()
-        this.core.Execute(el=>{
+        this.core.Execute(()=>{
             // console.log(el)
             this.core.style.addStyle(this.anime.before || {})
             this.onOn()
@@ -95,7 +95,7 @@ export default class MessageHOC{
     off(){
         this.dangerouslyOn = false
         this.updateCore()
-        this.core.Execute(el=>{
+        this.core.Execute(()=>{
             this.core.style.addStyle(this.anime.off || {})
             setTimeout(() => {
                 this.core.style.addStyle(this.anime.after || {})
@@ -161,7 +161,7 @@ export default class MessageHOC{
         }
 
     updateCore(){
-        this.core.Execute(element=>{
+        this.core.Execute(()=>{
             this.core.style.addStyle(CWind.TransitionMerge(Object.keys({...this.anime.on,...this.anime.off}),` ${this.time}ms ${this.effect}`))
         })
     }

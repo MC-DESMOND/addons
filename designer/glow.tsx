@@ -3,7 +3,7 @@ import HeadWind from "../cwind"
 import BaseHOC from "../HOC"
 import { BaseElementProps, Div } from "../csml"
 // import { ICssHelper } from "../css"
-import { Clientable, dict } from "../anys"
+import { Clientable } from "../anys"
 import CWind from "../cwind"
 
 export default class Glow{
