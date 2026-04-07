@@ -17,6 +17,44 @@ export class ReactState<T = undefined>{
      
   }
 }
+  /* /  */
+export function deepdrop(path:string | list<string | number>,obj:any,value:any,sep = "/"){
+  let pth:list<string | number> = []
+  if (typeof path == "string"){
+    if (path.includes(sep)){
+      path = path.trim()
+      if (path[0] == sep){
+        path = path.slice(1)
+      }
+      pth = path.split(sep)
+    }
+    else{
+      pth = []
+    }
+  }else{
+    pth = path
+  }
+  if (pth.length == 0){
+    obj = value
+    return obj
+  }
+  let lastindex:string | number = pth.pop() as any
+  let tepd = obj
+  for (let i in pth){
+    let index = pth[i]
+    try{
+      tepd = tepd[index]
+    }catch(e){
+      throw `deepdroping likely exceeded your object nest-length: ${e}`
+    }
+  }
+  try{
+      tepd[lastindex] = value
+    }catch(e){
+      throw `deepdroping likely exceeded your object nest-length: ${e}`
+    }
+  return obj
+}
 
 export function randomInt(start: number, end?: number): number {
   // let output: number[] = [];

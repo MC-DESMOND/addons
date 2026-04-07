@@ -201,17 +201,17 @@ export class DictSaverDict extends Map<string,dict>{}
 // type DictSaverDict = Map<string,dict>
 
 let DefaultMap = new DictSaverDict() 
-export class SaverNode{
+export class SaverNode<T = any>{
     name:string
     saver:DictSaver | DataSaver
     constructor(name:string,saver:DictSaver | DataSaver){
         this.name = name
         this.saver = saver
     }
-    set(value:any){
+    set(value:T | any){
         this.saver.set(this.name,value)
     }
-    get():any | undefined{
+    get():T | any | undefined{
         return this.saver.get(this.name)
     }
     has():boolean{
@@ -223,7 +223,7 @@ export class SaverNode{
             arr = [arr]
         }
         arr.push(value)
-        this.set(arr)
+        this.set(arr )
     }
     toString(){
         return this.get()
@@ -288,7 +288,7 @@ export class DictSaver {
         return Dict
     }
     unique(name:string,initial:any = undefined):SaverNode{
-        this.set(name,this.get(name) || initial)
+        this.set(name,this.get(name) == undefined ? initial : this.get(name))
         return new SaverNode(name,this)
     }
 

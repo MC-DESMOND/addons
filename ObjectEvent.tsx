@@ -56,6 +56,41 @@ export class ObjectEvent{
     
 }
 
+export class FuncSaver{
+    private saver:Map<string,(...attr)=>any> = new Map()
+    set(key:string,func:(...attr)=>any){
+        this.saver.set(key,func)
+    }
+    get(key:string){
+        return this.saver.get(key)
+    }
+    call(key:string,...attr){
+        let func = this.saver.get(key)
+        return func == undefined?undefined:func(...attr)
+    }
+    unique(key:string){
+        return new FuncSaverN(this,key)
+    }
+}
+class FuncSaverN{
+    saver
+    name
+    constructor(funcSaver:FuncSaver,name:string){
+        this.saver = funcSaver
+        this.name = name
+    }
+    set(func:()=>any){
+        this.saver.set(this.name,func)
+    }
+    get(){
+        return this.saver.get(this.name)
+    }
+    call(){
+        let func = this.saver.get(this.name)
+        return func == undefined?undefined:func()
+    }
+
+}
 
 export class OERModel{
     modelType:string

@@ -122,6 +122,11 @@ export default class XListener{
         // console.log("pre--",preEvent)
         this.events.save(key,xevent)
     }
+    unique(key:string){
+        return (func:(e:XEvent)=>void,lid?:string)=>{
+            this.Listen(key,func,lid)
+        }
+    }
     Announcement(key:string){
         return (xevent:XEvent = {data:{}} as XEvent)=>{
             this.Announce(key,xevent)
@@ -241,9 +246,27 @@ export class DictListener{
         this.events.save(key,xevent)
     }
 
-    Announcement(key:string){
-        return (xevent:XEvent = {data:{}} as XEvent)=>{
-            this.Announce(key,xevent)
-        }
+    unique(key:string){
+        return new listenerNode(this,key)
     }
+
+ 
+}
+
+class listenerNode{
+    name:string
+    listener:XListener | DictListener
+    constructor (listener:XListener | DictListener,name:string){
+        this.listener = listener
+        this.name = name
+    }
+    emit(xevent:XEvent = {data:{}} as XEvent){
+            this.listener.Announce(this.name,xevent)
+    }
+
+    on (func:(e:XEvent)=>void,lid?:string){
+            this.listener.Listen(this.name,func,lid)
+        }
+    Listen = this.on
+    Announce = this.emit
 }
