@@ -17,6 +17,13 @@ export class ReactState<T = undefined>{
      
   }
 }
+
+export class NewAudio extends Audio{
+  reset(){
+    this.pause()
+    this.currentTime = 0
+  }
+}
   /* /  */
 export function deepdrop(path:string | list<string | number>,obj:any,value:any,sep = "/"){
   let pth:list<string | number> = []
