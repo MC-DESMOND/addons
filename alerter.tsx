@@ -462,7 +462,7 @@ export class DangerousLoadify{
 export class Loader {
     loader:BaseHOC
     loaderClassName:string
-    openStyle = {display:"block"} as ICssHelper
+    openStyle = {display:"flex"} as ICssHelper
     closeStyle = {display:"none"} as ICssHelper
     main:any
     update:any
@@ -491,7 +491,7 @@ export class Loader {
     Render =(props: BaseElementProps)=>{
         this.mainUpdate = useStateUpdate()
         this.update = this.mainUpdate
-        return <this.loader._ className={this.loaderClassName} {...props} {...this.main}></this.loader._>
+        return <Div {...CWind.FlexRowAllCenter("10px")} width="fit-content" height="fit-content" gap="10px" {...props} {...this.main}><this.loader._ className={this.loaderClassName} ></this.loader._> <Div>{props.children}</Div></Div>
     }
     _ = this.Render
     
