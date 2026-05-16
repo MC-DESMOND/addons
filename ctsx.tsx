@@ -211,6 +211,12 @@ export const H1:FC<BaseElementProps<HTMLElement>> = function({className,children
 export const H2:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="h2" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
+export const H3:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="h3" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
+export const H4:FC<BaseElementProps<HTMLElement>> = function({className,children,id,Ref,onClick,...props}:any){
+  return <BaseElement tag="h4" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
+}
 export const Hr:FC<BaseElementProps<HTMLHRElement>> = function({className,children,id,Ref,onClick,...props}:any){
   return <BaseElement tag="hr" {...props} onClick={onClick} className={className} id={id} Ref={Ref}   >{children}</BaseElement>
 }
