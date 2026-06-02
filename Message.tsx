@@ -4,7 +4,7 @@ import { ICssHelper } from "./css";
 import CWind from "./cwind";
 import {  list } from "./anys";
 import { BaseElementProps } from "./ctsx";
-
+// import { ReactNode } from "react";
 interface Ianime {
             off?: ICssHelper, 
             on?: ICssHelper, 
@@ -19,7 +19,7 @@ interface IMessageAnimation{
 }
 
 export default class MessageHOC{
-    protected core:BaseHOC
+    public core:BaseHOC
     protected time:number
     protected effect:string
     protected anime
@@ -33,7 +33,7 @@ export default class MessageHOC{
         time = 1000, effect = "ease-in-out", 
         dangerouslyOn = false,
         anime = {
-            off : {opacity:"0",scale:"0.7"} , 
+            off : {opacity:"0",scale:"0.9"} , 
             on : {opacity:"1",scale:"1"} , 
             before:{display:"block"}, 
             after:{display:"none"} 
@@ -42,7 +42,7 @@ export default class MessageHOC{
         this.time = time
         this.effect = effect
         this.anime = {
-            off : {opacity:"0",scale:"0.7"} , 
+            off : {opacity:"0",scale:"0.9"} , 
             on : {opacity:"1",scale:"1"} , 
             before:{display:"block"}, 
             after:{display:"none"} 
@@ -109,6 +109,17 @@ export default class MessageHOC{
         return <this.core._ position="fixed" {...(this.dangerouslyOn?this.anime.on:this.anime.off)} {...this.dangerouslyOn?this.anime.before:this.anime.after} {...props}>
             {props.children}
         </this.core._>
+    }
+    Message = (message:string, duration:number = this.time)=>{
+        this.core.Execute(()=>{
+            this.core.innerText(message)
+        })
+        setTimeout(() => {
+            this.on()
+            setTimeout(() => {
+                this.off()
+            }, duration);
+        }, 100);
     }
     Render = this._
 
