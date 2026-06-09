@@ -17,6 +17,20 @@ export class ReactState<T = undefined>{
      
   }
 }
+export function getCenter(selector: string | HTMLElement) {
+  const el = typeof selector === "string"
+    ? document.querySelector(selector) as HTMLElement
+    : selector;
+
+  if (!el) return { x: 0, y: 0, rect: null };
+
+  const rect = el.getBoundingClientRect();
+  return {
+    x:    rect.x + rect.width  / 2,
+    y:    rect.y + rect.height / 2,
+    rect,
+  };
+}
 
 export class NewAudio extends Audio{
   reset(){
